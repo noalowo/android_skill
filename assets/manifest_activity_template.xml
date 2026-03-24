@@ -1,0 +1,7 @@
+<!--
+    AndroidManifest Activity 註冊範本
+    貼在 <application> 標籤內
+-->
+<activity android:name=".ui.{module}.{Module}Activity"
+    android:exported="false"
+    android:screenOrientation="landscape" />
