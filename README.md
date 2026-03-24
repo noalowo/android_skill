@@ -67,10 +67,3 @@ bash scripts/create_mvp_module.sh app/src/main/java/com/example/app ui/settings 
 bash scripts/check_mvp_module.sh app/src/main/java/com/example/app/ui/settings Settings
 ```
 
-## 規範重點
-
-- Java 類別使用 PascalCase，變數與方法使用 camelCase
-- XML View ID 使用 snake_case 加元件前綴（如 `iv_`、`btn_`、`tv_`）
-- JSON 欄位使用 `@SerializedName` 映射至 camelCase 變數
-- GET/DELETE 帶 body 時須使用 `@HTTP` 而非 `@GET`/`@DELETE`
-- Presenter 使用 WeakReference 持有 View 避免記憶體洩漏
