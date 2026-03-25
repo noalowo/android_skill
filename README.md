@@ -43,27 +43,42 @@ android_skill/
 git clone https://github.com/noalowo/android_skill.git ~/.claude/skills/android-skill
 ```
 
-安裝後，Claude Code 會自動在處理 Android 相關任務時載入此技能，包含以下情境：
+如何確認：
+    1. 終端輸入 claude
+    2. 在 claude code 輸入 /skills 
+       -> claude code 會顯示 project 層級的 skills & user 層級的 skills
+
+### 方法二：作為 Gemini CLI Skill 安裝
+
+將此專案複製至 Gemini CLI 的 skills 目錄：
+
+```bash
+git clone https://github.com/noalowo/android_skill.git ~/.gemini/skills/android-skill
+```
+
+如何確認：
+    1. 終端輸入 gemini   or  gemini skills list
+    2. 在 gemini cli 輸入 /skills list
+       -> gemini cli 會顯示 skills   (如使用 gemini skills list 會顯示你的 skills 放在哪些資料夾)
+
+### 方法三：安裝在單一專案(以各ai官方文件為主，下面提供簡易通用版)
+將此專案複製至專案內的 .agent(看個人使用甚麼ai，下列使用.agent通用說明，詳細去官方文件找尋相關 skills 安裝流程)/skills 目錄：
+
+```bash
+git clone https://github.com/noalowo/android_skill.git ~/你的專案/.agent/skills/android-skill
+```
+copilot 或在 android studio 用 gemini api key 的使用者須在專案內 /.agent 底下新增 AGENT.md ，並輸入下列 Rules：
+1. 在回覆前請先讀取並套用以下檔案：
+1) `.agent/AGENTS.md`
+2) `.agent/skills/android_skill/SKILL.md`
+
+下面是github copilot skills 官方文件：
+https://docs.github.com/en/copilot/concepts/agents/about-agent-skills
+
+## 安裝後，AI 會自動在處理 Android 相關任務時載入此技能，包含以下情境：
 
 - 新增 Activity / 頁面 / 模組
 - 建立 MVP 架構
 - 新增 Retrofit API 端點
 - 建立 RecyclerView Adapter
 - 修改 AndroidManifest.xml
-
-### 方法二：手動參考
-
-直接查閱各目錄下的範本與參考文件：
-
-1. 建立新模組時，參考 `SKILL.md` 的 MVP 架構範本
-2. 複製 `examples/` 下對應的 Java 範例，替換 `Sample` 為實際模組名稱
-3. 使用腳本快速建立檔案結構：
-
-```bash
-# 建立 MVP 模組
-bash scripts/create_mvp_module.sh app/src/main/java/com/example/app ui/settings Settings
-
-# 檢查模組完整性
-bash scripts/check_mvp_module.sh app/src/main/java/com/example/app/ui/settings Settings
-```
-
