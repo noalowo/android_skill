@@ -61,13 +61,14 @@ git clone https://github.com/noalowo/android_skill.git ~/.gemini/skills/android-
     2. 在 gemini cli 輸入 /skills list
        -> gemini cli 會顯示 skills   (如使用 gemini skills list 會顯示你的 skills 放在哪些資料夾)
 
-### 方法三：安裝在單一專案(以各ai官方文件為主，下面提供簡易通用版)
-將此專案複製至專案內的 .agent(看個人使用甚麼ai，下列使用.agent通用說明，詳細去官方文件找尋相關 skills 安裝流程)/skills 目錄：
+### 方法三：安裝在單一專案 (以各ai官方文件為主，下面提供簡易通用版)
+將此專案複製至專案內的 .agent(看個人使用甚麼ai，下列使用.agent做通用說明，詳細使用規範須去官方文件找尋相關的 skills 安裝流程)/skills 目錄：
 
 ```bash
 git clone https://github.com/noalowo/android_skill.git ~/你的專案/.agent/skills/android-skill
 ```
-copilot 或在 android studio 用 gemini api key 的使用者須在專案內 /.agent 底下新增 AGENT.md ，並輸入下列 Rules：
+
+接著須在專案內 /.agent 底下新增 AGENT.md，並輸入下列 Rules：
 1. 在回覆前請先讀取並套用以下檔案：
 1) `.agent/AGENTS.md`
 2) `.agent/skills/android_skill/SKILL.md`
@@ -82,3 +83,5 @@ https://docs.github.com/en/copilot/concepts/agents/about-agent-skills
 - 新增 Retrofit API 端點
 - 建立 RecyclerView Adapter
 - 修改 AndroidManifest.xml
+
+p.s. 
