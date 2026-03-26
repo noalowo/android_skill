@@ -38,42 +38,51 @@ android_skill/
 ### 方法一：作為 Claude Code Skill 安裝
 
 將此專案複製至 Claude Code 的 skills 目錄：
-
-```bash
-git clone https://github.com/noalowo/android_skill.git ~/.claude/skills/android-skill
-```
+1. download zip 然後解壓縮，放入自己的/.claude/skills/
+2. 
+    ```bash
+    git clone https://github.com/noalowo/android_skill.git ~/.claude/skills/android-skill
+    ```
 
 如何確認：
+
     1. 終端輸入 claude
+    
     2. 在 claude code 輸入 /skills 
        -> claude code 會顯示 project 層級的 skills & user 層級的 skills
 
 ### 方法二：作為 Gemini CLI Skill 安裝
 
 將此專案複製至 Gemini CLI 的 skills 目錄：
-
-```bash
-git clone https://github.com/noalowo/android_skill.git ~/.gemini/skills/android-skill
-```
+1. download zip 然後解壓縮，放入自己的/.gemini/skills/
+2. 
+    ```bash
+    git clone https://github.com/noalowo/android_skill.git ~/.gemini/skills/android-skill
+    ```
 
 如何確認：
+
     1. 終端輸入 gemini   or  gemini skills list
+
     2. 在 gemini cli 輸入 /skills list
        -> gemini cli 會顯示 skills   (如使用 gemini skills list 會顯示你的 skills 放在哪些資料夾)
 
 ### 方法三：安裝在單一專案 (以各ai官方文件為主，下面提供簡易通用版)
 將此專案複製至專案內的 .agent(看個人使用甚麼ai，下列使用.agent做通用說明，詳細使用規範須去官方文件找尋相關的 skills 安裝流程)/skills 目錄：
-
-```bash
-git clone https://github.com/noalowo/android_skill.git ~/你的專案/.agent/skills/android-skill
-```
+1. download zip 然後解壓縮，放入自己的/.claude/skills/android-skill
+2. 
+    ```bash
+    git clone https://github.com/noalowo/android_skill.git ~/你的專案/.agent/skills/android-skill
+    ```
 
 接著須在專案內 /.agent 底下新增 AGENT.md，並輸入下列 Rules：
+```
 1. 在回覆前請先讀取並套用以下檔案：
 1) `.agent/AGENTS.md`
 2) `.agent/skills/android_skill/SKILL.md`
+```
 
-下面是github copilot skills 官方文件：
+下面是github copilot skills 官方文件可參考：
 https://docs.github.com/en/copilot/concepts/agents/about-agent-skills
 
 ## 安裝後，AI 會自動在處理 Android 相關任務時載入此技能，包含以下情境：
