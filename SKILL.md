@@ -1,6 +1,6 @@
 ---
 name: android-skill
-description: This skill should be used when the user is working on an Android project and asks to "create a new Activity", "add a new page", "create a new module", "add a new feature", "create MVP structure", "add API endpoint", "add new layout", "add new screen", "add Retrofit API", "create RecyclerView adapter", or when the task involves creating or modifying Android Activities, Presenters, Contracts, layouts, adapters, API services, or any Android component in a Java-based Android project.
+description: This skill should be used when the user is working on an Android project and asks to "create a new Activity", "add a new page", "create a new module", "add a new feature", "create MVP structure", "add API endpoint", "add new layout", "add new screen", "add Retrofit API", "create RecyclerView adapter", "handle lifecycle", "onResume", "onPause", "onDestroy", "onSaveInstanceState", "activity lifecycle", "lifecycle methods", "save instance state", "restore state", or when the task involves creating or modifying Android Activities, Presenters, Contracts, layouts, adapters, API services, lifecycle callbacks, state management, or any Android component in a Java-based Android project.
 version: 1.0.0
 ---
 
