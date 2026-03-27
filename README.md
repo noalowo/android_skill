@@ -27,7 +27,7 @@ android_skill/
 
 ## 內容說明
 
-- **SKILL.md** - 命名規則、MVP 架構範本、Retrofit 規範、大型資料 Intent 傳遞、建立模組後的檢查清單
+- **SKILL.md** - 命名規則、MVP 架構範本、Activity 生命週期規範、Retrofit 規範、大型資料 Intent 傳遞、建立模組後的檢查清單
 - **assets/** - 可直接複製使用的 XML 範本
 - **examples/** - 完整的 Java 範例程式碼，替換模組名稱即可使用
 - **references/** - 快速查閱的 API 對照表
@@ -92,5 +92,17 @@ https://docs.github.com/en/copilot/concepts/agents/about-agent-skills
 - 新增 Retrofit API 端點
 - 建立 RecyclerView Adapter
 - 修改 AndroidManifest.xml
+- 處理 Activity 生命週期（onResume/onPause/onSaveInstanceState 等）
 
-p.s. 
+## 如何取得最新版本
+
+此 skill 持續更新中。若要同步最新內容：
+
+```bash
+# 進入安裝目錄後執行
+git pull origin main
+```
+
+也可在 GitHub 上點擊 **Watch > Releases only** 訂閱版本通知。
+
+p.s.
