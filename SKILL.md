@@ -55,6 +55,11 @@ public interface {Module}Contract {
         void finishActivity();
     }
     interface Presenter {
+        /** Activity onResume() 時呼叫 */
+        void onViewAttached(View view);
+        /** Activity onPause() 時呼叫 */
+        void onViewDetached();
+        /** Activity onDestroy() 時呼叫 */
         void onDestroy();
     }
 }
@@ -99,7 +104,9 @@ import androidx.core.view.WindowInsetsControllerCompat;
 
 Activity 結構重點：
 - `implements {Module}Contract.View`
-- `onCreate()` 中呼叫 `initViews()` 綁定 UI 元件與事件
+- `onCreate()` 中呼叫 `initViews()` 綁定 UI 元件與事件；Presenter 建構子**不傳入 View**
+- `onResume()` 中呼叫 `presenter.onViewAttached(this)`
+- `onPause()` 中呼叫 `presenter.onViewDetached()`
 - `onDestroy()` 中呼叫 `presenter.onDestroy()`
 - UI 更新須用 `runOnUiThread()` 包裹
 
@@ -115,10 +122,11 @@ public class {Module}Presenter implements {Module}Contract.Presenter {
 
     private WeakReference<{Module}Contract.View> viewRef;
     private Context context;
+    private CompositeDisposable disposables = new CompositeDisposable();
 
-    public {Module}Presenter({Module}Contract.View view, Context context) {
-        this.viewRef = new WeakReference<>(view);
+    public {Module}Presenter(Context context) {
         this.context = context;
+        // 不在建構子持有 View，由 onViewAttached() 傳入
     }
 
     private {Module}Contract.View getView() {
@@ -126,10 +134,106 @@ public class {Module}Presenter implements {Module}Contract.Presenter {
     }
 
     @Override
+    public void onViewAttached({Module}Contract.View view) {
+        viewRef = new WeakReference<>(view);
+        // 啟動訂閱或資料載入
+    }
+
+    @Override
+    public void onViewDetached() {
+        if (disposables != null) disposables.clear();
+        viewRef = null;
+    }
+
+    @Override
     public void onDestroy() {
+        if (disposables != null) disposables.clear();
         viewRef = null;
         context = null;
     }
+}
+```
+
+## Activity 生命週期規範
+
+### 生命週期與 MVP 對應
+
+| Activity 方法 | Presenter 對應 | 說明 |
+|---|---|---|
+| `onCreate()` | 建構 Presenter（不傳 View） | 初始化 UI、建立 Presenter 實例 |
+| `onResume()` | `onViewAttached(this)` | 重新綁定 View、啟動訂閱/資源 |
+| `onPause()` | `onViewDetached()` | 解除 View 參考、暫停訂閱/資源 |
+| `onDestroy()` | `onDestroy()` | 清理 context、所有訂閱 |
+
+**核心原則：Presenter 不直接依賴 Activity 生命週期**，只透過 `onViewAttached` / `onViewDetached` 感知 View 的存在。
+
+### onResume / onPause 資源管理
+
+在 Activity 層管理硬體資源（相機、感測器、計時器），不放進 Presenter：
+
+```java
+@Override
+protected void onResume() {
+    super.onResume();
+    if (presenter != null) presenter.onViewAttached(this);
+    // 重新啟動相機、感測器、計時器等
+}
+
+@Override
+protected void onPause() {
+    super.onPause();
+    if (presenter != null) presenter.onViewDetached();
+    // 暫停相機、感測器、計時器等，釋放資源
+}
+```
+
+### onSaveInstanceState / onRestoreInstanceState
+
+只存放**輕量 UI 狀態**（輸入框文字、捲動位置），不存放大型物件：
+
+```java
+@Override
+protected void onSaveInstanceState(Bundle outState) {
+    super.onSaveInstanceState(outState);
+    outState.putString("input_text", etInput.getText().toString());
+}
+
+@Override
+protected void onRestoreInstanceState(Bundle savedInstanceState) {
+    super.onRestoreInstanceState(savedInstanceState);
+    etInput.setText(savedInstanceState.getString("input_text"));
+}
+```
+
+> `onRestoreInstanceState` 在 `onStart()` 之後、`onResume()` 之前呼叫，bundle 保證非 null。
+
+### Presenter 的 onViewAttached / onViewDetached
+
+```java
+@Override
+public void onViewAttached(SampleContract.View view) {
+    viewRef = new WeakReference<>(view);
+    // 重新啟動需要 View 的訂閱或資料載入
+}
+
+@Override
+public void onViewDetached() {
+    if (disposables != null) disposables.clear();
+    viewRef = null;
+}
+```
+
+呼叫任何 view 方法前，務必先判斷 null：
+
+```java
+private SampleContract.View getView() {
+    return viewRef != null ? viewRef.get() : null;
+}
+
+private void updateUi(String data) {
+    SampleContract.View view = getView();
+    if (view == null) return;   // View 已消失，直接略過
+    view.showLoading(false);
 }
 ```
 
@@ -193,10 +297,15 @@ tempData = null;
 ## 檢查清單
 
 建立或修改 Android 模組後，確認：
-- [ ] Contract 定義了 View 和 Presenter 介面
-- [ ] Presenter 使用 WeakReference 持有 View
-- [ ] Activity 的 onDestroy() 呼叫 presenter.onDestroy()
-- [ ] Activity 的 onCreate() 包含全螢幕、隱藏 Navigation Bar 等初始化（依專案慣例）
+- [ ] Contract 定義了 View 和 Presenter 介面（含 `onViewAttached` / `onViewDetached` / `onDestroy`）
+- [ ] Presenter 使用 WeakReference 持有 View，且在 `onViewDetached()` 將 viewRef 設為 null
+- [ ] 呼叫 View 方法前均有 null 檢查（`getView() != null`）
+- [ ] Activity 的 `onResume()` 呼叫 `presenter.onViewAttached(this)`
+- [ ] Activity 的 `onPause()` 呼叫 `presenter.onViewDetached()`
+- [ ] Activity 的 `onDestroy()` 呼叫 `presenter.onDestroy()`
+- [ ] 需保留的 UI 狀態（輸入框等）透過 `onSaveInstanceState` / `onRestoreInstanceState` 處理
+- [ ] 硬體資源（相機、感測器、計時器）在 Activity 的 `onResume` / `onPause` 管理，不放進 Presenter
+- [ ] Activity 的 `onCreate()` 包含全螢幕、隱藏 Navigation Bar 等初始化（依專案慣例）
 - [ ] AndroidManifest.xml 已註冊新 Activity
 - [ ] Layout 中的 View ID 使用正確前綴
 - [ ] 命名遵循上方命名規則表

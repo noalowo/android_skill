@@ -48,13 +48,59 @@ public class SampleActivity extends AppCompatActivity implements SampleContract.
 
         // setContentView(R.layout.sample);
 
-        presenter = new SamplePresenter(this, this);
+        // 建構子不傳 View，由 onResume() 的 onViewAttached() 負責
+        presenter = new SamplePresenter(this);
 
         initViews();
     }
 
     private void initViews() {
         // 綁定 View 元件與事件
+    }
+
+    // ─── 生命週期 ─────────────────────────────────────────────────────────
+
+    /**
+     * onResume：Activity 回到前景，重新啟動資源與訂閱。
+     * 常見場景：恢復相機、感測器、計時器、重新訂閱 RxJava 串流。
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (presenter != null) presenter.onViewAttached(this);
+        // 範例：resumeCamera(); resumeSensor();
+    }
+
+    /**
+     * onPause：Activity 離開前景，暫停消耗資源的操作。
+     * 常見場景：暫停相機、感測器、停止計時器。
+     * 注意：onSaveInstanceState 保證在 onStop 之前執行，不在此處呼叫 onViewDetached。
+     */
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (presenter != null) presenter.onViewDetached();
+        // 範例：pauseCamera(); pauseSensor();
+    }
+
+    /**
+     * onSaveInstanceState：系統即將回收 Activity 前儲存 UI 狀態。
+     * 只存放輕量的 UI 狀態（輸入框內容、捲動位置等），不存放大型資料。
+     */
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        // 範例：outState.putString("input_text", etInput.getText().toString());
+    }
+
+    /**
+     * onRestoreInstanceState：系統重建 Activity 後還原狀態。
+     * 在 onStart() 之後、onResume() 之前呼叫，bundle 保證非 null。
+     */
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        // 範例：etInput.setText(savedInstanceState.getString("input_text"));
     }
 
     @Override
