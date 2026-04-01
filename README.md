@@ -33,7 +33,7 @@ android_skill/
 - **references/** - 快速查閱的 API 對照表
 - **scripts/** - 自動化建立與驗證 MVP 模組結構的 shell 腳本
 
-## 如何在android studio中使用
+## 如何在 Android Studio 中使用
 
 ### 終端 Claude Code 使用者
 
