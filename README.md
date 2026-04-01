@@ -39,7 +39,7 @@ android_skill/
 
 將此專案複製至 Claude Code 的 skills 目錄，以下兩種方式：
 1. download zip 然後解壓縮到 C:\User\User\.claude\skills\ 目錄底下
-2. 打開powershell進入自己的 C:\User\User\.claude\skills\ 並把此專案git clone到裡面(建議)
+2. 打開 PowerShell 進入自己的 C:\User\User\.claude\skills\ 並把此專案git clone到裡面(建議)
 
 如何確認：
 
@@ -52,7 +52,7 @@ android_skill/
 
 將此專案複製至 Gemini CLI 的 skills 目錄，以下兩種方式：
 1. download zip 然後解壓縮到 C:\User\User\.gemini\skills\ 目錄底下
-2. 打開powershell進入自己的 C:\User\User\.gemini\skills\ 並把此專案git clone到裡面(建議)
+2. 打開 PowerShell 進入自己的 C:\User\User\.gemini\skills\ 並把此專案git clone到裡面(建議)
 
 如何確認：
 
@@ -61,12 +61,12 @@ android_skill/
     2. 在 gemini cli 輸入 /skills list
        -> gemini cli 會顯示 skills   (如使用 gemini skills list 會顯示你的 skills 放在哪些資料夾)
 
-### android studio plugin github copilot 使用者
+### Android Studio Plugin GitHub Copilot 使用者
 
-先確認有無開啟skills：進到 setting -> 點 Tools -> Github Copilot -> Chat -> 找到 Enable Skills
+先確認有無開啟skills：進到 setting -> 點 Tools -> GitHub Copilot -> Chat -> 找到 Enable Skills
 <img width="980" height="724" alt="image" src="https://github.com/user-attachments/assets/7bf29900-f882-48e8-b441-9b9a0d41a9ca" />
 
-下面是github copilot skills 官方文件，內容(如下圖)提到專案skills和個人skills會讀取那些資料夾：
+下面是 GitHub Copilot skills 官方文件，內容(如下圖)提到專案skills和個人skills會讀取那些資料夾：
 https://docs.github.com/en/copilot/concepts/agents/about-agent-skills
 <img width="785" height="363" alt="image" src="https://github.com/user-attachments/assets/0da8a7f9-cdab-4e7a-ac3f-315951f5abbd" />
 
