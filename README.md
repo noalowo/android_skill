@@ -59,11 +59,11 @@ android_skill/
 ### Github Copilot Plugin
 
 先確認是否有Enable Skills
-<img width="980" height="724" alt="螢幕擷取畫面 2026-04-01 151246" src="https://github.com/user-attachments/assets/267a48f8-cbec-4133-86b6-34d185bf5fd8" />
+![image](https://github.com/noalowo/image/blob/main/%E8%9E%A2%E5%B9%95%E6%93%B7%E5%8F%96%E7%95%AB%E9%9D%A2%202026-04-01%20151246.png)
 
 下面是Github Copilot Skills 官方文件可參考，內容(如下圖)提到 Copilot 會如何讀取專案 Skills 和個人 Skills：
 https://docs.github.com/en/copilot/concepts/agents/about-agent-skills
-<img width="785" height="363" alt="螢幕擷取畫面 2026-04-01 152042" src="https://github.com/user-attachments/assets/dcab518b-f318-4d30-9799-b8a7db0906ab" />
+![image](https://github.com/noalowo/image/blob/main/%E8%9E%A2%E5%B9%95%E6%93%B7%E5%8F%96%E7%95%AB%E9%9D%A2%202026-04-01%20152042.png)
 
 
 ## 安裝後，AI 會自動在處理 Android 相關任務時載入此技能，包含以下情境：
