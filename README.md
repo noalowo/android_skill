@@ -33,16 +33,13 @@ android_skill/
 - **references/** - 快速查閱的 API 對照表
 - **scripts/** - 自動化建立與驗證 MVP 模組結構的 shell 腳本
 
-## 如何使用
+## 如何在android studio中使用
 
-### 方法一：作為 Claude Code Skill 安裝
+### 終端 Claude Code 使用者
 
-將此專案複製至 Claude Code 的 skills 目錄：
-1. download zip 然後解壓縮，放入自己的/.claude/skills/
-2. 
-    ```bash
-    git clone https://github.com/noalowo/android_skill.git ~/.claude/skills/android-skill
-    ```
+將此專案複製至 Claude Code 的 skills 目錄，以下兩種方式：
+1. download zip 然後解壓縮到 C:\User\User\.claude\skills\ 目錄底下
+2. 打開powershell進入自己的 C:\User\User\.claude\skills\ 並把此專案git clone到裡面(建議)
 
 如何確認：
 
@@ -51,14 +48,11 @@ android_skill/
     2. 在 claude code 輸入 /skills 
        -> claude code 會顯示 project 層級的 skills & user 層級的 skills
 
-### 方法二：作為 Gemini CLI Skill 安裝
+### 終端 Gemini CLI 使用者
 
-將此專案複製至 Gemini CLI 的 skills 目錄：
-1. download zip 然後解壓縮，放入自己的/.gemini/skills/
-2. 
-    ```bash
-    git clone https://github.com/noalowo/android_skill.git ~/.gemini/skills/android-skill
-    ```
+將此專案複製至 Gemini CLI 的 skills 目錄，以下兩種方式：
+1. download zip 然後解壓縮到 C:\User\User\.gemini\skills\ 目錄底下
+2. 打開powershell進入自己的 C:\User\User\.gemini\skills\ 並把此專案git clone到裡面(建議)
 
 如何確認：
 
@@ -67,23 +61,14 @@ android_skill/
     2. 在 gemini cli 輸入 /skills list
        -> gemini cli 會顯示 skills   (如使用 gemini skills list 會顯示你的 skills 放在哪些資料夾)
 
-### 方法三：安裝在單一專案 (以各ai官方文件為主，下面提供簡易通用版)
-將此專案複製至專案內的 .agent(看個人使用甚麼ai，下列使用.agent做通用說明，詳細使用規範須去官方文件找尋相關的 skills 安裝流程)/skills 目錄：
-1. download zip 然後解壓縮，放入自己的/.claude/skills/android-skill
-2. 
-    ```bash
-    git clone https://github.com/noalowo/android_skill.git ~/你的專案/.agent/skills/android-skill
-    ```
+### android studio plugin github copilot 使用者
 
-接著須在專案內 /.agent 底下新增 AGENT.md，並輸入下列 Rules：
-```
-1. 在回覆前請先讀取並套用以下檔案：
-1) `.agent/AGENTS.md`
-2) `.agent/skills/android_skill/SKILL.md`
-```
+先確認有無開啟skills：進到 setting -> 點 Tools -> Github Copilot -> Chat -> 找到 Enable Skills
+<img width="980" height="724" alt="image" src="https://github.com/user-attachments/assets/7bf29900-f882-48e8-b441-9b9a0d41a9ca" />
 
-下面是github copilot skills 官方文件可參考：
+下面是github copilot skills 官方文件，內容(如下圖)提到專案skills和個人skills會讀取那些資料夾：
 https://docs.github.com/en/copilot/concepts/agents/about-agent-skills
+<img width="785" height="363" alt="image" src="https://github.com/user-attachments/assets/0da8a7f9-cdab-4e7a-ac3f-315951f5abbd" />
 
 ## 安裝後，AI 會自動在處理 Android 相關任務時載入此技能，包含以下情境：
 
@@ -102,7 +87,5 @@ https://docs.github.com/en/copilot/concepts/agents/about-agent-skills
 # 進入安裝目錄後執行
 git pull origin main
 ```
-
-也可在 GitHub 上點擊 **Watch > Releases only** 訂閱版本通知。
 
 p.s.
