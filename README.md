@@ -1,45 +1,53 @@
 # android_skill
 
-Android Java 專案的 MVP 開發規範技能，提供命名規則、架構範本、Retrofit API 規範及實用腳本。
-
 ## 目錄結構
 
 ```
 android_skill/
-├── SKILL.md                          # 完整開發規範（主要參考文件）
-├── assets/
-│   ├── layout_template.xml           # Layout XML 範本
-│   └── manifest_activity_template.xml # AndroidManifest Activity 註冊範本
-├── examples/
-│   ├── MvpActivityExample.java       # MVP Activity 範例
-│   ├── MvpContractExample.java       # MVP Contract 範例
-│   ├── MvpPresenterExample.java      # MVP Presenter 範例
-│   ├── RetrofitApiExample.java       # Retrofit ApiService 範例
-│   └── SerializedNameExample.java    # Gson @SerializedName 範例
-├── references/
-│   ├── immersive-mode.md             # Android Immersive Mode API 參考
-│   ├── retrofit-annotations.md       # Retrofit2 常用註解參考
-│   └── view-id-prefixes.md           # View ID 前綴命名規範
-└── scripts/
-    ├── create_mvp_module.sh          # 快速建立 MVP 模組目錄與空白檔案
-    └── check_mvp_module.sh           # 檢查 MVP 模組是否完整
+├── README.md
+├── architecture/                          # MVP 架構開發規範
+│   ├── SKILL.md                           # 完整開發規範（主要參考文件）
+│   ├── assets/
+│   │   ├── layout_template.xml            # Layout XML 範本
+│   │   └── manifest_activity_template.xml # AndroidManifest Activity 註冊範本
+│   ├── examples/
+│   │   ├── MvpActivityExample.java        # MVP Activity 範例
+│   │   ├── MvpContractExample.java        # MVP Contract 範例
+│   │   ├── MvpPresenterExample.java       # MVP Presenter 範例
+│   │   ├── RetrofitApiExample.java        # Retrofit ApiService 範例
+│   │   └── SerializedNameExample.java     # Gson @SerializedName 範例
+│   ├── references/
+│   │   ├── immersive-mode.md              # Android Immersive Mode API 參考
+│   │   ├── retrofit-annotations.md        # Retrofit2 常用註解參考
+│   │   └── view-id-prefixes.md            # View ID 前綴命名規範
+│   └── scripts/
+│       ├── create_mvp_module.sh           # 快速建立 MVP 模組目錄與空白檔案
+│       └── check_mvp_module.sh            # 檢查 MVP 模組是否完整
+└── ci/                                    # CI pipeline 規範
+    └── SKILL.md                           # GitHub Actions pipeline 設定指南
 ```
 
 ## 內容說明
 
-- **SKILL.md** - 命名規則、MVP 架構範本、Activity 生命週期規範、Retrofit 規範、大型資料 Intent 傳遞、建立模組後的檢查清單
-- **assets/** - 可直接複製使用的 XML 範本
-- **examples/** - 完整的 Java 範例程式碼，替換模組名稱即可使用
-- **references/** - 快速查閱的 API 對照表
-- **scripts/** - 自動化建立與驗證 MVP 模組結構的 shell 腳本
+- **architecture/SKILL.md** - 命名規則、MVP 架構範本、Activity 生命週期規範、Retrofit 規範、大型資料 Intent 傳遞、建立模組後的檢查清單
+- **architecture/assets/** - 可直接複製使用的 XML 範本
+- **architecture/examples/** - 完整的 Java 範例程式碼，替換模組名稱即可使用
+- **architecture/references/** - 快速查閱的 API 對照表
+- **architecture/scripts/** - 自動化建立與驗證 MVP 模組結構的 shell 腳本
+- **ci/SKILL.md** - GitHub Actions CI pipeline 五階段設定（lint、unit test、instrumentation test、static analysis、build APK）
 
 ## 如何在 Android Studio 中使用
 
 ### Claude Code 使用者
 
-將此專案複製至 Claude Code 的 skills 目錄，兩種方式：
+將此專案複製至 Claude Code 的 skills 目錄，三種方式：
 1. download zip 然後解壓縮，放入 C:/User/<username>/.claude/skills/ 目錄底下
 2. 使用 PowerShell 進入 C:/User/<username>/.claude/skills/ 使用 git clone 指令
+p.s. 目前各 AI 讀取 skills 不會遞迴掃描 skills 目錄下所有的 SKILL.md，所以使用上述兩個方式複製此專案後，請自行把專案內各 skill 目錄分開：
+    skills/
+    ├── architecture
+    └── ci
+3. 找個資料夾 git clone 此專案，並把各 skill 目錄複製至自己的 C:/User/<username>/.claude/skills/ 目錄底下
 
 #### 如何確認：
 
@@ -51,6 +59,11 @@ android_skill/
 將此專案複製至 Gemini CLI 的 skills 目錄：
 1. download zip 然後解壓縮，放入 C:/User/<username>/.gemini/skills/ 目錄底下
 2. 使用 PowerShell 進入 C:/User/<username>/.gemini/skills/ 使用 git clone 指令
+p.s. 目前各 AI 讀取 skills 不會遞迴掃描 skills 目錄下所有的 SKILL.md，所以使用上述兩個方式複製此專案後，請自行把專案內各 skill 目錄分開：
+    skills/
+    ├── architecture
+    └── ci
+3. 找個資料夾 git clone 此專案，並把各 skill 目錄複製至自己的 C:/User/<username>/.gemini/skills/ 目錄底下
 
 #### 如何確認：
 1. 終端輸入 gemini   or  gemini skills list
@@ -68,6 +81,7 @@ https://docs.github.com/en/copilot/concepts/agents/about-agent-skills
 
 ## 安裝後，AI 會自動在處理 Android 相關任務時載入此技能，包含以下情境：
 
+**架構開發（architecture）**
 - 新增 Activity / 頁面 / 模組
 - 建立 MVP 架構
 - 新增 Retrofit API 端點
@@ -75,12 +89,10 @@ https://docs.github.com/en/copilot/concepts/agents/about-agent-skills
 - 修改 AndroidManifest.xml
 - 處理 Activity 生命週期（onResume/onPause/onSaveInstanceState 等）
 
-## 如何取得最新版本
+**CI Pipeline（ci）**
+- 設定 GitHub Actions CI
+- 建立自動化 pipeline
+- 新增 lint / unit test / instrumentation test 自動化流程
+- 設定自動 build APK
 
-此 skill 持續更新中。若要同步最新內容：
-
-```bash
-# 進入安裝目錄後執行
-git pull origin main
-```
-p.s.
+p.s. 此 skill 持續更新中..
