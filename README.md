@@ -43,10 +43,13 @@ android_skill/
 將此專案複製至 Claude Code 的 skills 目錄，三種方式：
 1. download zip 然後解壓縮，放入 C:/User/<username>/.claude/skills/ 目錄底下
 2. 使用 PowerShell 進入 C:/User/<username>/.claude/skills/ 使用 git clone 指令
-p.s. 目前各 AI 讀取 skills 不會遞迴掃描 skills 目錄下所有的 SKILL.md，所以使用上述兩個方式複製此專案後，請自行把專案內各 skill 目錄分開：
+
+    p.s. 目前各 AI 讀取 skills 不會遞迴掃描 skills 目錄下所有的 SKILL.md，所以使用上述兩個方式複製此專案後，請自行把專案內各 skill 目錄分開：
+    ```
     skills/
     ├── architecture
     └── ci
+    ```
 3. 找個資料夾 git clone 此專案，並把各 skill 目錄複製至自己的 C:/User/<username>/.claude/skills/ 目錄底下
 
 #### 如何確認：
@@ -59,10 +62,13 @@ p.s. 目前各 AI 讀取 skills 不會遞迴掃描 skills 目錄下所有的 SKI
 將此專案複製至 Gemini CLI 的 skills 目錄：
 1. download zip 然後解壓縮，放入 C:/User/<username>/.gemini/skills/ 目錄底下
 2. 使用 PowerShell 進入 C:/User/<username>/.gemini/skills/ 使用 git clone 指令
-p.s. 目前各 AI 讀取 skills 不會遞迴掃描 skills 目錄下所有的 SKILL.md，所以使用上述兩個方式複製此專案後，請自行把專案內各 skill 目錄分開：
+
+    p.s. 目前各 AI 讀取 skills 不會遞迴掃描 skills 目錄下所有的 SKILL.md，所以使用上述兩個方式複製此專案後，請自行把專案內各 skill 目錄分開：
+    ```
     skills/
     ├── architecture
     └── ci
+    ```
 3. 找個資料夾 git clone 此專案，並把各 skill 目錄複製至自己的 C:/User/<username>/.gemini/skills/ 目錄底下
 
 #### 如何確認：
