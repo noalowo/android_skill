@@ -11,11 +11,20 @@ android_skill/
 │   │   ├── layout_template.xml            # Layout XML 範本
 │   │   └── manifest_activity_template.xml # AndroidManifest Activity 註冊範本
 │   ├── examples/
-│   │   ├── MvpActivityExample.java        # MVP Activity 範例
-│   │   ├── MvpContractExample.java        # MVP Contract 範例
-│   │   ├── MvpPresenterExample.java       # MVP Presenter 範例
-│   │   ├── RetrofitApiExample.java        # Retrofit ApiService 範例
-│   │   └── SerializedNameExample.java     # Gson @SerializedName 範例
+│   │   ├── BaseActivity.java              # Base Activity 抽象類別
+│   │   ├── BaseContract.java             # Base MVP Contract 介面
+│   │   ├── BaseFragment.java             # Base Fragment 抽象類別
+│   │   ├── BasePresenter.java            # Base Presenter 抽象類別
+│   │   ├── CallbackWrapper.java          # Retrofit Callback 封裝
+│   │   ├── ErrorType.java                # 錯誤類型列舉
+│   │   ├── MvpActivityExample.java       # MVP Activity 範例
+│   │   ├── MvpContractExample.java       # MVP Contract 範例
+│   │   ├── MvpPresenterExample.java      # MVP Presenter 範例
+│   │   ├── RetrofitApiExample.java       # Retrofit ApiService 範例
+│   │   ├── SampleAdapterExample.java     # RecyclerView Adapter 範例
+│   │   ├── SamplePresenterTest.java      # Presenter 單元測試範例
+│   │   ├── SampleRepository.java         # Repository 範例
+│   │   └── SerializedNameExample.java    # Gson @SerializedName 範例
 │   ├── references/
 │   │   ├── immersive-mode.md              # Android Immersive Mode API 參考
 │   │   ├── retrofit-annotations.md        # Retrofit2 常用註解參考
@@ -31,7 +40,7 @@ android_skill/
 
 - **architecture/SKILL.md** - 命名規則、MVP 架構範本、Activity 生命週期規範、Retrofit 規範、大型資料 Intent 傳遞、建立模組後的檢查清單
 - **architecture/assets/** - 可直接複製使用的 XML 範本
-- **architecture/examples/** - 完整的 Java 範例程式碼，替換模組名稱即可使用
+- **architecture/examples/** - 完整的 Java 範例程式碼，包含 Base 類別、Repository、Adapter、Presenter 測試等，替換模組名稱即可使用
 - **architecture/references/** - 快速查閱的 API 對照表
 - **architecture/scripts/** - 自動化建立與驗證 MVP 模組結構的 shell 腳本
 - **ci/SKILL.md** - GitHub Actions CI pipeline 五階段設定（lint、unit test、instrumentation test、static analysis、build APK）
