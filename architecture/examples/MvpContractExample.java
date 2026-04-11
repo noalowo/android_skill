@@ -1,8 +1,16 @@
 package com.example.app.ui.sample;
 
+import com.example.app.base.BaseContract;
+
+import java.util.List;
+
 /**
- * MVP Contract 範本
- * 用法：將 {Module} 替換為實際模組名稱
+ * MVP Contract 範本（繼承 BaseContract）
+ * 用法：將 Sample 替換為實際模組名稱
+ *
+ * BaseContract.View 已包含：showError、showLoading、finishActivity
+ * BaseContract.Presenter 已包含：onViewAttached、onViewDetached、onDestroy
+ * 此處只需定義模組特有的方法。
  *
  * 生命週期 hook 原則：
  *   - onResume()  → presenter.onViewAttached()  綁定 View、啟動資源
@@ -11,18 +19,21 @@ package com.example.app.ui.sample;
  */
 public interface SampleContract {
 
-    interface View {
-        void showError(String error);
-        void showLoading(boolean isLoading);
-        void finishActivity();
+    interface View extends BaseContract.View {
+        /** 資料載入完成時回呼 */
+        void onDataLoaded(List<SampleItem> items);
+
+        // 可依模組需求新增其他 View 方法，例如：
+        // void onItemDeleted(int position);
+        // void navigateToDetail(String id);
     }
 
-    interface Presenter {
-        /** Activity onResume() 時呼叫，重新綁定 View 並啟動資源 */
-        void onViewAttached(View view);
-        /** Activity onPause() 時呼叫，暫停資源並解除 View 強參考 */
-        void onViewDetached();
-        /** Activity onDestroy() 時呼叫，清理全部訂閱與 context */
-        void onDestroy();
+    interface Presenter extends BaseContract.Presenter<View> {
+        /** 載入資料 */
+        void loadData();
+
+        // 可依模組需求新增其他 Presenter 方法，例如：
+        // void deleteItem(String id);
+        // void refreshData();
     }
 }
