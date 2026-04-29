@@ -186,11 +186,11 @@ tasks.matching { it.name == "preBuild" }.configureEach { dependsOn("installGitHo
 # ════════════════════════════════════════════════════════════
 
 # 推薦 image（擇一）：
-#   - mingc/android-build-box:latest    （社群活躍，含 JDK 17 + SDK）
-#   - jangrewe/gitlab-ci-android:latest （GitLab 社群常用）
+#   - mingc/android-build-box:1.24.0@sha256:<digest>    （社群活躍，含 JDK 17 + SDK）
+#   - jangrewe/gitlab-ci-android:2024.06@sha256:<digest> （GitLab 社群常用）
 #   - eclipse-temurin:17-jdk + 自行安裝 cmdline-tools（最穩，自控版本）
-# ⚠️ 正式環境請 pin digest（`@sha256:...`），勿用 `latest`
-image: mingc/android-build-box:latest
+# ⚠️ 正式環境請使用「固定 tag + digest（`@sha256:...`）」；`latest` 僅作反例/臨時驗證，不建議直接照抄
+image: mingc/android-build-box:1.24.0@sha256:<digest>
 
 # ── 全域變數 ─────────────────────────────────────────────
 variables:
