@@ -32,8 +32,20 @@ android_skill/
 │   └── scripts/
 │       ├── create_mvp_module.sh           # 快速建立 MVP 模組目錄與空白檔案
 │       └── check_mvp_module.sh            # 檢查 MVP 模組是否完整
-└── ci/                                    # CI pipeline 規範
-    └── SKILL.md                           # GitHub Actions pipeline 設定指南
+├── ci/                                    # CI pipeline 規範
+│   └── SKILL.md                           # GitHub Actions pipeline 設定指南
+└── git_skill/                             # Android Team Git 協作規範
+    ├── SKILL.md                           # 分支模型、命名規則、紅線規則、指令模板
+    ├── examples/
+    │   └── commit_messages.md             # Commit message 格式範例
+    ├── references/
+    │   ├── develop_to_main.md             # develop → main release 合併流程
+    │   ├── mr_workflow.md                 # 開 feature 分支與 MR 流程
+    │   ├── onboarding.md                  # 第一次 clone 專案、設定環境
+    │   ├── rebase_guide.md                # rebase、解衝突、force push
+    │   └── scenarios.md                   # 非標準狀況（commit 跑錯分支、放棄改動等）
+    └── scripts/
+        └── validate.sh                    # 驗證分支名與 commit message
 ```
 
 ## 內容說明
@@ -44,22 +56,27 @@ android_skill/
 - **architecture/references/** - 快速查閱的 API 對照表
 - **architecture/scripts/** - 自動化建立與驗證 MVP 模組結構的 shell 腳本
 - **ci/SKILL.md** - GitHub Actions CI pipeline 五階段設定（lint、unit test、instrumentation test、static analysis、build APK）
+- **git_skill/SKILL.md** - Android Team 在 GitLab 的協作流程：main/develop/feature 三層分支模型、分支命名與 commit message 強制格式、紅線規則（禁止對 main/develop 直接 push 或 pull）、rebase / MR / release 合併指令模板
+- **git_skill/examples/** - Commit message 格式範例
+- **git_skill/references/** - 分情境的詳細指南（onboarding、MR workflow、rebase、release 合併、非標準狀況處理）
+- **git_skill/scripts/validate.sh** - 自動驗證分支名與 commit message 格式
 
 ## 如何在 Android Studio 中使用
 
 ### Claude Code 使用者
 
 將此專案複製至 Claude Code 的 skills 目錄，三種方式：
-1. download zip 然後解壓縮，放入 C:/User/<username>/.claude/skills/ 目錄底下
-2. 使用 PowerShell 進入 C:/User/<username>/.claude/skills/ 使用 git clone 指令
+1. download zip 然後解壓縮，放入 C:/User/username/.claude/skills/ 目錄底下
+2. 使用 PowerShell 進入 C:/User/username/.claude/skills/ 使用 git clone 指令
 
     p.s. 目前各 AI 讀取 skills 不會遞迴掃描 skills 目錄下所有的 SKILL.md，所以使用上述兩個方式複製此專案後，請自行把專案內各 skill 目錄分開：
     ```
     skills/
     ├── architecture
-    └── ci
+    ├── ci
+    └── git_skill
     ```
-3. 找個資料夾 git clone 此專案，並把各 skill 目錄複製至自己的 C:/User/<username>/.claude/skills/ 目錄底下
+3. 找個資料夾 git clone 此專案，並把各 skill 目錄複製至自己的 C:/User/username/.claude/skills/ 目錄底下
 
 #### 如何確認：
 
@@ -69,16 +86,17 @@ android_skill/
 ### Gemini CLI 使用者
 
 將此專案複製至 Gemini CLI 的 skills 目錄：
-1. download zip 然後解壓縮，放入 C:/User/<username>/.gemini/skills/ 目錄底下
-2. 使用 PowerShell 進入 C:/User/<username>/.gemini/skills/ 使用 git clone 指令
+1. download zip 然後解壓縮，放入 C:/User/username/.gemini/skills/ 目錄底下
+2. 使用 PowerShell 進入 C:/User/username/.gemini/skills/ 使用 git clone 指令
 
     p.s. 目前各 AI 讀取 skills 不會遞迴掃描 skills 目錄下所有的 SKILL.md，所以使用上述兩個方式複製此專案後，請自行把專案內各 skill 目錄分開：
     ```
     skills/
     ├── architecture
-    └── ci
+    ├── ci
+    └── git_skill
     ```
-3. 找個資料夾 git clone 此專案，並把各 skill 目錄複製至自己的 C:/User/<username>/.gemini/skills/ 目錄底下
+3. 找個資料夾 git clone 此專案，並把各 skill 目錄複製至自己的 C:/User/username/.gemini/skills/ 目錄底下
 
 #### 如何確認：
 1. 終端輸入 gemini   or  gemini skills list
@@ -109,5 +127,13 @@ https://docs.github.com/en/copilot/concepts/agents/about-agent-skills
 - 建立自動化 pipeline
 - 新增 lint / unit test / instrumentation test 自動化流程
 - 設定自動 build APK
+
+**Git 協作流程（git_skill）**
+- 開新 feature 分支 / 建立 MR
+- 撰寫或檢查 commit message 格式
+- rebase develop / 同步 develop / 解衝突
+- 合併到 develop / develop 合併到 main（release）
+- 第一次 clone 專案、設定環境
+- 在 Android 專案內 commit 時自動套用 commit message 規範
 
 p.s. 此 skill 持續更新中..
