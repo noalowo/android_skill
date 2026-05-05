@@ -55,7 +55,7 @@ android_skill/
 - **architecture/examples/** - 完整的 Java 範例程式碼，包含 Base 類別、Repository、Adapter、Presenter 測試等，替換模組名稱即可使用
 - **architecture/references/** - 快速查閱的 API 對照表
 - **architecture/scripts/** - 自動化建立與驗證 MVP 模組結構的 shell 腳本
-- **ci/SKILL.md** - GitHub Actions CI pipeline 五階段設定（lint、unit test、instrumentation test、static analysis、build APK）
+- **ci/SKILL.md** - GitLab CI pipeline 五階段設定（pre-check / lint / test / security / build），含 pre-commit hook、Android Studio 整合、`.gitlab-ci.yml` 完整範本
 - **git_skill/SKILL.md** - Android Team 在 GitLab 的協作流程：main/develop/feature 三層分支模型、分支命名與 commit message 強制格式、紅線規則（禁止對 main/develop 直接 push 或 pull）、rebase / MR / release 合併指令模板
 - **git_skill/examples/** - Commit message 格式範例
 - **git_skill/references/** - 分情境的詳細指南（onboarding、MR workflow、rebase、release 合併、非標準狀況處理）
@@ -123,10 +123,11 @@ https://docs.github.com/en/copilot/concepts/agents/about-agent-skills
 - 處理 Activity 生命週期（onResume/onPause/onSaveInstanceState 等）
 
 **CI Pipeline（ci）**
-- 設定 GitHub Actions CI
-- 建立自動化 pipeline
-- 新增 lint / unit test / instrumentation test 自動化流程
-- 設定自動 build APK
+- 設定 GitLab CI / 建立 `.gitlab-ci.yml`
+- 建立自動化 pipeline（pre-check / lint / test / security / build）
+- 新增 Checkstyle / SpotBugs / PMD / ktlint / detekt / Android Lint
+- 設定自動 build APK（debug / signed release）
+- 設定 pre-commit hook 與 Android Studio 規則檔同步
 
 **Git 協作流程（git_skill）**
 - 開新 feature 分支 / 建立 MR

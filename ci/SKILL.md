@@ -1,7 +1,7 @@
 ---
 name: android-ci-pipeline
-description: Use when setting up, modifying, or troubleshooting a CI pipeline for an Android Java/Kotlin project on GitLab (gitlab.com or self-hosted). Triggers on "setup CI", "add GitLab CI", "create pipeline", "configure CI", "automate build", "add lint check", "add unit test stage", "Checkstyle", "SpotBugs", "ktlint", "detekt", "build APK in CI", "pre-commit hook", "merge request pipeline", or any request involving continuous integration for Android on GitLab. Does NOT cover CD (deploy / release distribution).
-version: 3.0.0
+description: Use when setting up, modifying, or troubleshooting a CI pipeline for an Android Java/Kotlin project on GitLab (gitlab.com or self-hosted). Triggers on Chinese or English "設定 GitLab CI / 建立 pipeline / 加入 lint stage / 新增 unit test 階段 / 設定 pre-commit hook / MR pipeline / build APK / 簽名打包 / Checkstyle / SpotBugs / PMD / ktlint / detekt", "setup CI", "add GitLab CI", "create pipeline", "configure CI", "automate build", "add lint check", "add unit test stage", "Checkstyle", "SpotBugs", "ktlint", "detekt", "build APK in CI", "pre-commit hook", "merge request pipeline", or any request involving continuous integration for Android on GitLab. Does NOT cover CD (deploy / release distribution / Firebase App Distribution / Play Store upload).
+version: 3.1.0
 ---
 
 # Android CI Pipeline（GitLab CI，Java 主、Kotlin 兼容）
@@ -144,7 +144,9 @@ tasks.matching { it.name == "preBuild" }.configureEach { dependsOn("installGitHo
 | **SpotBugs IDEA** | 即時 SpotBugs 檢查 |
 | **PMDPlugin** | 即時 PMD 檢查 |
 | **ktlint** / **detekt** | Kotlin 端對等檢查 |
-| **GitToolBox** | git hook 狀態提示 |
+| **Save Actions** / built-in *Reformat on save* | 存檔自動套規則（避免手動觸發 lint）|
+
+> 註：GitToolBox 是 git 狀態列顯示外掛，**不負責 git hook 執行**；hook 是由 git 本身執行 `.git/hooks/`，IDE 不需特別整合。
 
 ### 4.2 規則檔集中管理
 
@@ -186,11 +188,16 @@ tasks.matching { it.name == "preBuild" }.configureEach { dependsOn("installGitHo
 # ════════════════════════════════════════════════════════════
 
 # 推薦 image（擇一）：
-#   - mingc/android-build-box:1.24.0@sha256:<digest>    （社群活躍，含 JDK 17 + SDK）
-#   - jangrewe/gitlab-ci-android:2024.06@sha256:<digest> （GitLab 社群常用）
+#   - mingc/android-build-box:1.24.0      （社群活躍，含 JDK 17 + SDK；可直接使用）
+#   - jangrewe/gitlab-ci-android:2024.06   （GitLab 社群常用）
 #   - eclipse-temurin:17-jdk + 自行安裝 cmdline-tools（最穩，自控版本）
-# ⚠️ 正式環境請使用「固定 tag + digest（`@sha256:...`）」；`latest` 僅作反例/臨時驗證，不建議直接照抄
-image: mingc/android-build-box:1.24.0@sha256:<digest>
+#
+# ⚠️ 正式環境建議鎖定 digest（防止上游推 tag 覆蓋）。取得 digest 的方式：
+#     docker pull mingc/android-build-box:1.24.0
+#     docker inspect --format='{{index .RepoDigests 0}}' mingc/android-build-box:1.24.0
+#     # 取得後改為： mingc/android-build-box:1.24.0@sha256:abcd1234...
+# 直接複製本範本可運作（用 tag）；上線前再補 digest，不要照抄 `<digest>` 佔位符。
+image: mingc/android-build-box:1.24.0
 
 # ── 全域變數 ─────────────────────────────────────────────
 variables:
@@ -215,35 +222,68 @@ stages:
   - build
 
 # ── 共用 cache（YAML anchor）─────────────────────────────
-.gradle-cache: &gradle-cache
+# 拆成 rw / ro 避免多 job 平行時互相覆蓋寫 cache：
+#   - 第一個跑的 job 用 rw (pull-push) 建 cache
+#   - 後續平行 job 全部 ro (pull) 只讀，不寫
+.gradle-cache-rw: &gradle-cache-rw
   cache:
     key:
       files:
         - gradle/wrapper/gradle-wrapper.properties
         - "**/build.gradle*"
+        - "**/build.gradle.kts"
     paths:
       - .gradle/caches
       - .gradle/wrapper
       - .gradle/build-cache
     policy: pull-push
 
+.gradle-cache-ro: &gradle-cache-ro
+  cache:
+    key:
+      files:
+        - gradle/wrapper/gradle-wrapper.properties
+        - "**/build.gradle*"
+        - "**/build.gradle.kts"
+    paths:
+      - .gradle/caches
+      - .gradle/wrapper
+      - .gradle/build-cache
+    policy: pull
+
 .before-script: &before-script
   before_script:
     - chmod +x ./gradlew
     - export GRADLE_USER_HOME=$CI_PROJECT_DIR/.gradle
 
+# ── Job 觸發 rules anchor（feature 跑輕量，develop/main 跑完整）──
+# feature 分支：只跑 lint + test（不跑 security / signed build）
+# develop / main / MR：完整 pipeline
+.rules-all: &rules-all
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "develop"
+    - if: $CI_COMMIT_BRANCH =~ /^feature\/.*/
+
+.rules-integration-only: &rules-integration-only
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "develop"
+
 # ════════ Stage 1: pre-check（風格） ═══════════════════════
-# Java 與 Kotlin 兩個 job 平行跑，DAG 加速
+# checkstyle 是 pipeline 第一個被排程的 job，由它建立 cache
 checkstyle:
   stage: pre-check
-  <<: *gradle-cache
+  <<: *gradle-cache-rw     # 第一個 job：建立並寫入 cache
   <<: *before-script
   script:
     - ./gradlew checkstyleMain
   artifacts:
     when: always
     paths:
-      - app/build/reports/checkstyle/
+      - "**/build/reports/checkstyle/"   # 多 module 通用
     expire_in: 1 week
   rules:
     - exists:
@@ -251,45 +291,50 @@ checkstyle:
 
 ktlint:
   stage: pre-check
-  <<: *gradle-cache
+  needs: [checkstyle]                    # 等 cache 建好才 pull
+  <<: *gradle-cache-ro
   <<: *before-script
   script:
     - ./gradlew ktlintCheck
   artifacts:
     when: on_failure
     paths:
-      - app/build/reports/ktlint/
+      - "**/build/reports/ktlint/"
   rules:
     - exists:
         - "**/*.kt"
 
 # ════════ Stage 2: lint（靜態分析） ═══════════════════════
-# 三個 job 平行跑（needs: []），不必等 pre-check 全部完成
-spotbugs:
+# 三個 job 平行跑（needs: [checkstyle] 只是為了 cache，DAG 仍可平行）
+static-analysis:                          # 改名：原本叫 spotbugs 但實際跑 spotbugs + pmd
   stage: lint
-  needs: []
-  <<: *gradle-cache
+  needs:
+    - job: checkstyle
+      optional: true                      # checkstyle 可能因 rules 被 skip，下游不要連帶失敗
+  <<: *gradle-cache-ro
   <<: *before-script
   script:
     - ./gradlew spotbugsMain pmdMain
   artifacts:
     when: always
     paths:
-      - app/build/reports/spotbugs/
-      - app/build/reports/pmd/
+      - "**/build/reports/spotbugs/"
+      - "**/build/reports/pmd/"
     expire_in: 1 week
 
 detekt:
   stage: lint
-  needs: []
-  <<: *gradle-cache
+  needs:
+    - job: checkstyle
+      optional: true
+  <<: *gradle-cache-ro
   <<: *before-script
   script:
     - ./gradlew detekt
   artifacts:
     when: always
     paths:
-      - app/build/reports/detekt/
+      - "**/build/reports/detekt/"
     expire_in: 1 week
   rules:
     - exists:
@@ -297,40 +342,64 @@ detekt:
 
 android-lint:
   stage: lint
-  needs: []
-  <<: *gradle-cache
+  needs:
+    - job: checkstyle
+      optional: true
+  <<: *gradle-cache-ro
   <<: *before-script
   script:
     - ./gradlew lintDebug
   artifacts:
     when: always
     paths:
-      - app/build/reports/lint-results-debug.html
-      - app/build/reports/lint-results-debug.xml
+      - "**/build/reports/lint-results-debug.html"
+      - "**/build/reports/lint-results-debug.xml"
     expire_in: 1 week
 
 # ════════ Stage 3: test（含 Robolectric） ═════════════════
 unit-test:
   stage: test
-  needs: [checkstyle, spotbugs, android-lint]
-  <<: *gradle-cache
+  needs:
+    - job: checkstyle
+      optional: true
+    - job: static-analysis
+    - job: android-lint
+  <<: *gradle-cache-ro
   <<: *before-script
   script:
     - ./gradlew testDebugUnitTest jacocoTestReport
-  coverage: '/Total.*?([0-9]{1,3})%/'
+    # 將 jacoco XML 中的 coverage 印到 stdout，讓 GitLab 的 coverage regex 抓得到
+    # 註：jacocoTestReport 預設不印百分比，必須手動 parse XML，否則 MR 看不到 coverage
+    - |
+      python3 -c "
+      import xml.etree.ElementTree as ET, glob, sys
+      total_missed = total_covered = 0
+      for f in glob.glob('**/build/reports/jacoco/**/jacocoTestReport.xml', recursive=True):
+          tree = ET.parse(f)
+          for c in tree.getroot().findall('counter'):
+              if c.get('type') == 'INSTRUCTION':
+                  total_missed += int(c.get('missed', 0))
+                  total_covered += int(c.get('covered', 0))
+      total = total_missed + total_covered
+      pct = (total_covered * 100 // total) if total else 0
+      print(f'Total coverage: {pct}%')
+      "
+  coverage: '/Total coverage: ([0-9]{1,3})%/'
   artifacts:
     when: always
     reports:
-      junit: app/build/test-results/testDebugUnitTest/TEST-*.xml
+      junit: "**/build/test-results/testDebugUnitTest/TEST-*.xml"
       coverage_report:
         coverage_format: jacoco
-        path: app/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml
+        path: "**/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml"
     paths:
-      - app/build/reports/tests/
-      - app/build/reports/jacoco/
+      - "**/build/reports/tests/"
+      - "**/build/reports/jacoco/"
     expire_in: 1 week
 
-# ════════ Stage 4: security（GitLab 內建） ════════════════
+# ════════ Stage 4: security（GitLab 內建，僅 develop / main / MR）═
+# 注意：SAST + Dependency Scanning 部分功能需 GitLab Premium / Ultimate；
+#      Free tier 僅 Secret Detection 完整可用，其餘會降級或 skip。
 include:
   - template: Security/SAST.gitlab-ci.yml
   - template: Security/Dependency-Scanning.gitlab-ci.yml
@@ -339,35 +408,45 @@ include:
 sast:
   stage: security
   needs: []
+  <<: *rules-integration-only            # feature branch 不跑
 
 dependency_scanning:
   stage: security
   needs: []
+  <<: *rules-integration-only
 
 secret_detection:
   stage: security
   needs: []
+  <<: *rules-integration-only
 
 # ════════ Stage 5: build ════════════════════════════════
+# feature / develop / MR → debug APK
+# main → signed release APK
 build-debug:
   stage: build
   needs: [unit-test]
-  <<: *gradle-cache
+  <<: *gradle-cache-ro
   <<: *before-script
   script:
     - ./gradlew assembleDebug --stacktrace
   artifacts:
     name: "debug-apk-$CI_COMMIT_SHORT_SHA"
     paths:
-      - app/build/outputs/apk/debug/app-debug.apk
+      - "**/build/outputs/apk/debug/*-debug.apk"
     expire_in: 1 month
   rules:
-    - if: $CI_COMMIT_BRANCH != "main"
+    # main 走 release，不重複出 debug
+    - if: $CI_COMMIT_BRANCH == "main"
+      when: never
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == "develop"
+    - if: $CI_COMMIT_BRANCH =~ /^feature\/.*/
 
 build-release:
   stage: build
   needs: [unit-test, sast, dependency_scanning]
-  <<: *gradle-cache
+  <<: *gradle-cache-ro
   <<: *before-script
   script:
     # 從 GitLab CI Variables 還原 keystore（簽名後產出 artifact 即止；不上架 = 非 CD）
@@ -380,7 +459,7 @@ build-release:
   artifacts:
     name: "release-apk-$CI_COMMIT_SHORT_SHA"
     paths:
-      - app/build/outputs/apk/release/app-release.apk
+      - "**/build/outputs/apk/release/*-release.apk"
     expire_in: 6 months
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
@@ -409,8 +488,8 @@ GitLab → Settings → Merge requests，啟用：
 
 - ✅ **Pipelines must succeed**：pipeline 失敗無法 merge
 - ✅ **All threads must be resolved**：所有 review 留言必須解決
-- ✅ **Squash commits when merging**：保持 main 歷史乾淨
-- ✅ **Delete source branch**：合併後自動刪除 feature
+- ❌ **Squash commits when merging**：**不要啟用**（與 git_skill 紅線「禁止 squash merge」一致，保持線性歷史與作者歸屬）
+- ✅ **Delete source branch**：合併後自動刪除 feature（與 git_skill cleanup 流程一致）
 
 GitLab → Settings → Repository → Protected branches：
 
@@ -493,7 +572,60 @@ subprojects {
 
 ---
 
-## 十二、檢查清單
+## 十二、⚠️ 適用前提與已知限制
+
+本範本以「典型單一 app module、Java 為主、Groovy DSL」的專案為基礎設計。複製到其他人的專案時請先比對以下假設：
+
+### 12.1 專案結構假設
+- **單一 `app/` module**：原始 artifact 路徑 hardcode `app/build/...`，本版已改為 `**/build/...` 通用 glob，多 module 專案可直接使用，但 **artifact 數量會增加**，留意 GitLab artifact size limit。
+- **若你的專案 module 名不是 `app/`**（例如 `mobile/`、`presentation/`），不需改 yaml，但 §三 pre-commit hook 與 §十一 範例文字描述要替換。
+
+### 12.2 Gradle DSL
+- §十一 root `build.gradle` 範例為 **Groovy DSL**。AGP 8+ 新建專案預設 **Kotlin DSL（`build.gradle.kts`）**，需轉換語法：
+  - `apply plugin: 'checkstyle'` → `plugins { checkstyle }` 或 `apply(plugin = "checkstyle")`
+  - `rootProject.file('...')` → `rootProject.file("...")`（雙引號）
+  - `fileMode = 0755` → `filePermissions { unix("0755") }`（Gradle 8.3+）
+
+### 12.3 SpotBugs / Checkstyle / PMD 與 Android module
+- `spotbugsMain` / `checkstyleMain` / `pmdMain` 是 **Java plugin** 的 source set 任務名。**Android application/library module 不會自動產生這些任務**（AGP 用 `Debug` / `Release` source set）。
+- 解法擇一：
+  1. **只在 library / pure-Java module 跑這些工具**（`subprojects { if (project.plugins.hasPlugin('java')) { ... } }`）
+  2. **為 Android module 自訂 task**：手動建立 `tasks.register("checkstyleDebug", Checkstyle)` 並指定 `source = android.sourceSets.main.java.srcDirs`
+  3. 改用 **detekt + Android Lint** 為主（兩者對 Android module 開箱即用）
+- `subprojects { apply plugin: 'checkstyle' }` 套到 `buildSrc` 或純資源 module 會 fail，建議加 `if (project.plugins.hasPlugin('java-library') || project.name != 'buildSrc')` 守門。
+
+### 12.4 Jacoco coverage
+- 原本 `coverage: '/Total.*?([0-9]{1,3})%/'` regex **永遠抓不到**，因為 `jacocoTestReport` 預設不印百分比到 stdout。
+- 本版已加上 inline Python 解析 `jacocoTestReport.xml` 並輸出 `Total coverage: NN%`，若 image 無 `python3` 請改寫成 shell + `xmllint`，或在 Gradle 加自訂 task：
+  ```groovy
+  jacocoTestReport.doLast {
+      def report = file("build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml")
+      // parse 出 INSTRUCTION counter 並 println "Total coverage: ${pct}%"
+  }
+  ```
+
+### 12.5 GitLab 版本 / Tier
+- `Security/SAST.gitlab-ci.yml`、`Security/Dependency-Scanning.gitlab-ci.yml` 部分掃描器需要 **Premium / Ultimate** tier；Free tier 會自動降級或 skip 部分 analyzer，**這不是設定錯誤**。
+- `Secret Detection` 在 Free tier 完整可用。
+- 若團隊為 Free tier，可移除 `Dependency-Scanning` template，改用 OWASP Dependency-Check Gradle plugin 在 lint stage 跑。
+
+### 12.6 第三方套件版本
+- §十一 `findsecbugs-plugin:1.13.0` 版本可能過舊，請至 [Maven Central](https://central.sonatype.com/artifact/com.h3xstream.findsecbugs/findsecbugs-plugin) 確認最新。
+- Checkstyle / PMD / Detekt 版本同理，定期升級。
+
+### 12.7 Pre-commit hook 效能
+- §三 `pre-push` 跑 `lintDebug + testDebugUnitTest`，**大型專案可能 5–10 分鐘**，開發者會偷偷停用 hook。建議：
+  - 拆分 commit hook（快、style + static）與 push hook（慢、test）
+  - 提供 `--no-verify` 例外規範（緊急 bypass 流程）
+  - 或改在 IDE 用「Save Actions」+ Gradle daemon 預熱降低延遲
+
+### 12.8 共享 git hook 的權限
+- `installGitHooks` task 用 Groovy 的 `fileMode = 0755`，Kotlin DSL 或 Gradle 8.3+ 應改 `filePermissions { unix("0755") }`，否則 Linux/macOS 上 hook 會 **沒有執行權限** 而靜默失效。
+- Windows 開發者：git hook 走 git bash，`#!/bin/sh` shebang 可運作；但 hook 檔不需 chmod。
+
+---
+
+## 十三、檢查清單
 
 設定或修改 CI pipeline 後，確認：
 
