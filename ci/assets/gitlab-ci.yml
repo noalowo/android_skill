@@ -1,0 +1,84 @@
+image: mingc/android-build-box:1.27.0
+
+variables:
+  GRADLE_USER_HOME: "$CI_PROJECT_DIR/.gradle"
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.caching=true"
+
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH && $CI_PIPELINE_SOURCE != "merge_request_event"
+
+stages:
+  - lint
+  - sast
+  - test
+  - build
+
+cache:
+  key: gradle-cache-v1
+  paths:
+    - .gradle/caches
+    - .gradle/wrapper
+
+before_script:
+  - chmod +x ./gradlew
+
+checkstyle:
+  stage: lint
+  script:
+    - ./gradlew checkstyle
+  artifacts:
+    when: always
+    name: "checkstyle-$CI_COMMIT_SHORT_SHA"
+    paths:
+      - app/build/reports/checkstyle/
+    expire_in: 2 weeks
+
+android-lint:
+  stage: lint
+  script:
+    - ./gradlew lintDebug
+  artifacts:
+    when: always
+    name: "android-lint-$CI_COMMIT_SHORT_SHA"
+    paths:
+      - app/build/reports/lint-results-debug.html
+      - app/build/reports/lint-results-debug.xml
+    expire_in: 2 weeks
+
+spotbugs:
+  stage: sast
+  script:
+    - ./gradlew spotbugs
+  artifacts:
+    when: always
+    name: "spotbugs-sast-$CI_COMMIT_SHORT_SHA"
+    paths:
+      - app/build/reports/spotbugs/
+    expire_in: 2 weeks
+
+unit-test:
+  stage: test
+  script:
+    - ./gradlew testDebugUnitTest jacocoTestReport
+  coverage: '/Total coverage: ([0-9]{1,3})%/'
+  artifacts:
+    when: always
+    name: "unit-test-$CI_COMMIT_SHORT_SHA"
+    reports:
+      junit: app/build/test-results/testDebugUnitTest/TEST-*.xml
+    paths:
+      - app/build/reports/tests/testDebugUnitTest/
+      - app/build/reports/jacoco/
+    expire_in: 2 weeks
+
+build-debug:
+  stage: build
+  script:
+    - ./gradlew assembleDebug --stacktrace
+  artifacts:
+    name: "app-debug-$CI_COMMIT_SHORT_SHA"
+    paths:
+      - app/build/outputs/apk/debug/app-debug.apk
+    expire_in: 2 weeks

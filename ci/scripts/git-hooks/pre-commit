@@ -1,0 +1,4 @@
+#!/bin/sh
+set -e
+echo "[pre-commit] running checkstyle + spotbugs..."
+./gradlew checkstyle spotbugs --daemon
