@@ -1,0 +1,4 @@
+#!/bin/sh
+set -e
+echo "[pre-push] running lint + unit tests..."
+./gradlew lintDebug testDebugUnitTest --daemon

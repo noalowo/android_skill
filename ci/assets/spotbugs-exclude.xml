@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+  <Match>
+    <Class name="~.*\.R(\$.*)?"/>
+  </Match>
+  <Match>
+    <Class name="~.*\.BuildConfig"/>
+  </Match>
+  <Match>
+    <Class name="~.*\.databinding\..*"/>
+  </Match>
+  <Match>
+    <Source name="~.*/build/generated/.*"/>
+  </Match>
+</FindBugsFilter>

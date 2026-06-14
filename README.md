@@ -32,8 +32,25 @@ android_skill/
 │   └── scripts/
 │       ├── create_mvp_module.sh           # 快速建立 MVP 模組目錄與空白檔案
 │       └── check_mvp_module.sh            # 檢查 MVP 模組是否完整
-├── ci/                                    # CI pipeline 規範
-│   └── SKILL.md                           # GitHub Actions pipeline 設定指南
+├── ci/                                    # Android CI pipeline 規範（GitLab，Java）
+│   ├── SKILL.md                           # CI pipeline 設定指南（主要參考文件）
+│   ├── assets/
+│   │   ├── gitlab-ci.yml                  # .gitlab-ci.yml 範本
+│   │   ├── checkstyle.xml                 # Checkstyle 規則檔
+│   │   ├── spotbugs-exclude.xml           # SpotBugs 排除規則
+│   │   └── editorconfig                   # .editorconfig 範本
+│   ├── references/
+│   │   ├── version-check.md               # 使用時用 web 查證相容版本
+│   │   ├── gradle-setup.md                # Android module 接 Checkstyle/SpotBugs/JaCoCo
+│   │   ├── gitlab-setup.md                # 分支保護、MR 守門、Free tier SAST
+│   │   ├── android-studio.md              # IDE 外掛與規則檔對齊
+│   │   ├── troubleshooting.md             # 常見問題與品質門檻收緊
+│   │   └── limitations.md                 # 適用前提與版本相容性
+│   └── scripts/
+│       └── git-hooks/
+│           ├── pre-commit                 # commit 前跑 checkstyle + spotbugs
+│           ├── pre-push                   # push 前跑 lint + unit test
+│           └── README.md                  # git hook 安裝說明
 └── git_skill/                             # Android Team Git 協作規範
     ├── SKILL.md                           # 分支模型、命名規則、紅線規則、指令模板
     ├── examples/
@@ -55,7 +72,10 @@ android_skill/
 - **architecture/examples/** - 完整的 Java 範例程式碼，包含 Base 類別、Repository、Adapter、Presenter 測試等，替換模組名稱即可使用
 - **architecture/references/** - 快速查閱的 API 對照表
 - **architecture/scripts/** - 自動化建立與驗證 MVP 模組結構的 shell 腳本
-- **ci/SKILL.md** - GitLab CI pipeline 五階段設定（pre-check / lint / test / security / build），含 pre-commit hook、Android Studio 整合、`.gitlab-ci.yml` 完整範本
+- **ci/SKILL.md** - Android（Java）在 GitLab Free tier 的 CI pipeline 四階段設定（lint / sast / test / build）：Checkstyle 程式碼品質、find-sec-bugs（SpotBugs）SAST、JUnit + JaCoCo 單元測試覆蓋率、build debug APK，含路由表、快速開始與檢查清單
+- **ci/assets/** - `.gitlab-ci.yml`、Checkstyle / SpotBugs 規則檔、`.editorconfig`
+- **ci/references/** - 版本查證、Android module 的 Gradle 設定、GitLab 設定、Android Studio 整合、疑難排解、適用限制與版本相容性
+- **ci/scripts/git-hooks/** - 本地 pre-commit / pre-push hook 與安裝說明
 - **git_skill/SKILL.md** - Android Team 在 GitLab 的協作流程：main/develop/feature 三層分支模型、分支命名與 commit message 強制格式、紅線規則（禁止對 main/develop 直接 push 或 pull）、rebase / MR / release 合併指令模板
 - **git_skill/examples/** - Commit message 格式範例
 - **git_skill/references/** - 分情境的詳細指南（onboarding、MR workflow、rebase、release 合併、非標準狀況處理）
@@ -124,9 +144,12 @@ https://docs.github.com/en/copilot/concepts/agents/about-agent-skills
 
 **CI Pipeline（ci）**
 - 設定 GitLab CI / 建立 `.gitlab-ci.yml`
-- 建立自動化 pipeline（pre-check / lint / test / security / build）
-- 新增 Checkstyle / SpotBugs / PMD / ktlint / detekt / Android Lint
-- 設定自動 build APK（debug / signed release）
+- 建立自動化 pipeline（lint / sast / test / build）
+- 程式碼品質檢查（Checkstyle / Android Lint）
+- SAST 靜態安全檢測（SpotBugs + find-sec-bugs）
+- 單元測試與覆蓋率（JUnit + JaCoCo）
+- build debug APK
+- 在 Android module 接上 Checkstyle / SpotBugs / JaCoCo 的 Gradle 設定
 - 設定 pre-commit hook 與 Android Studio 規則檔同步
 
 **Git 協作流程（git_skill）**
