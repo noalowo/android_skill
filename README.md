@@ -5,7 +5,7 @@
 ```
 android_skill/
 ├── README.md
-├── architecture/                          # MVP 架構開發規範
+├── imac-android-architecture-skill/       # MVP 架構開發規範
 │   ├── SKILL.md                           # 完整開發規範（主要參考文件）
 │   ├── assets/
 │   │   ├── layout_template.xml            # Layout XML 範本
@@ -32,7 +32,7 @@ android_skill/
 │   └── scripts/
 │       ├── create_mvp_module.sh           # 快速建立 MVP 模組目錄與空白檔案
 │       └── check_mvp_module.sh            # 檢查 MVP 模組是否完整
-├── ci/                                    # Android CI pipeline 規範（GitLab，Java）
+├── imac-android-ci-pipeline/              # Android CI pipeline 規範（GitLab，Java）
 │   ├── SKILL.md                           # CI pipeline 設定指南（主要參考文件）
 │   ├── assets/
 │   │   ├── gitlab-ci.yml                  # .gitlab-ci.yml 範本
@@ -67,15 +67,15 @@ android_skill/
 
 ## 內容說明
 
-- **architecture/SKILL.md** - 命名規則、MVP 架構範本、Activity 生命週期規範、Retrofit 規範、大型資料 Intent 傳遞、建立模組後的檢查清單
-- **architecture/assets/** - 可直接複製使用的 XML 範本
-- **architecture/examples/** - 完整的 Java 範例程式碼，包含 Base 類別、Repository、Adapter、Presenter 測試等，替換模組名稱即可使用
-- **architecture/references/** - 快速查閱的 API 對照表
-- **architecture/scripts/** - 自動化建立與驗證 MVP 模組結構的 shell 腳本
-- **ci/SKILL.md** - Android（Java）在 GitLab Free tier 的 CI pipeline 四階段設定（lint / sast / test / build）：Checkstyle 程式碼品質、find-sec-bugs（SpotBugs）SAST、JUnit + JaCoCo 單元測試覆蓋率、build debug APK，含路由表、快速開始與檢查清單
-- **ci/assets/** - `.gitlab-ci.yml`、Checkstyle / SpotBugs 規則檔、`.editorconfig`
-- **ci/references/** - 版本查證、Android module 的 Gradle 設定、GitLab 設定、Android Studio 整合、疑難排解、適用限制與版本相容性
-- **ci/scripts/git-hooks/** - 本地 pre-commit / pre-push hook 與安裝說明
+- **imac-android-architecture-skill/SKILL.md** - 命名規則、MVP 架構範本、Activity 生命週期規範、Retrofit 規範、大型資料 Intent 傳遞、建立模組後的檢查清單
+- **imac-android-architecture-skill/assets/** - 可直接複製使用的 XML 範本
+- **imac-android-architecture-skill/examples/** - 完整的 Java 範例程式碼，包含 Base 類別、Repository、Adapter、Presenter 測試等，替換模組名稱即可使用
+- **imac-android-architecture-skill/references/** - 快速查閱的 API 對照表
+- **imac-android-architecture-skill/scripts/** - 自動化建立與驗證 MVP 模組結構的 shell 腳本
+- **imac-android-ci-pipeline/SKILL.md** - Android（Java）在 GitLab Free tier 的 CI pipeline 四階段設定（lint / sast / test / build）：Checkstyle 程式碼品質、find-sec-bugs（SpotBugs）SAST、JUnit + JaCoCo 單元測試覆蓋率、build debug APK，含路由表、快速開始與檢查清單
+- **imac-android-ci-pipeline/assets/** - `.gitlab-ci.yml`、Checkstyle / SpotBugs 規則檔、`.editorconfig`
+- **imac-android-ci-pipeline/references/** - 版本查證、Android module 的 Gradle 設定、GitLab 設定、Android Studio 整合、疑難排解、適用限制與版本相容性
+- **imac-android-ci-pipeline/scripts/git-hooks/** - 本地 pre-commit / pre-push hook 與安裝說明
 - **git_skill/SKILL.md** - Android Team 在 GitLab 的協作流程：main/develop/feature 三層分支模型、分支命名與 commit message 強制格式、紅線規則（禁止對 main/develop 直接 push 或 pull）、rebase / MR / release 合併指令模板
 - **git_skill/examples/** - Commit message 格式範例
 - **git_skill/references/** - 分情境的詳細指南（onboarding、MR workflow、rebase、release 合併、非標準狀況處理）
@@ -92,8 +92,8 @@ android_skill/
     p.s. 目前各 AI 讀取 skills 不會遞迴掃描 skills 目錄下所有的 SKILL.md，所以使用上述兩個方式複製此專案後，請自行把專案內各 skill 目錄分開：
     ```
     skills/
-    ├── architecture
-    ├── ci
+    ├── imac-android-architecture-skill
+    ├── imac-android-ci-pipeline
     └── git_skill
     ```
 3. 找個資料夾 git clone 此專案，並把各 skill 目錄複製至自己的 C:/User/username/.claude/skills/ 目錄底下
@@ -112,8 +112,8 @@ android_skill/
     p.s. 目前各 AI 讀取 skills 不會遞迴掃描 skills 目錄下所有的 SKILL.md，所以使用上述兩個方式複製此專案後，請自行把專案內各 skill 目錄分開：
     ```
     skills/
-    ├── architecture
-    ├── ci
+    ├── imac-android-architecture-skill
+    ├── imac-android-ci-pipeline
     └── git_skill
     ```
 3. 找個資料夾 git clone 此專案，並把各 skill 目錄複製至自己的 C:/User/username/.gemini/skills/ 目錄底下
@@ -134,7 +134,7 @@ https://docs.github.com/en/copilot/concepts/agents/about-agent-skills
 
 ## 安裝後，AI 會自動在處理 Android 相關任務時載入此技能，包含以下情境：
 
-**架構開發（architecture）**
+**架構開發（imac-android-architecture-skill）**
 - 新增 Activity / 頁面 / 模組
 - 建立 MVP 架構
 - 新增 Retrofit API 端點
@@ -142,7 +142,7 @@ https://docs.github.com/en/copilot/concepts/agents/about-agent-skills
 - 修改 AndroidManifest.xml
 - 處理 Activity 生命週期（onResume/onPause/onSaveInstanceState 等）
 
-**CI Pipeline（ci）**
+**CI Pipeline（imac-android-ci-pipeline）**
 - 設定 GitLab CI / 建立 `.gitlab-ci.yml`
 - 建立自動化 pipeline（lint / sast / test / build）
 - 程式碼品質檢查（Checkstyle / Android Lint）

@@ -7,8 +7,8 @@
 從專案根目錄：
 
 ```sh
-cp skills/android_skill/ci/scripts/git-hooks/pre-commit .git/hooks/pre-commit
-cp skills/android_skill/ci/scripts/git-hooks/pre-push   .git/hooks/pre-push
+cp skills/android_skill/imac-android-ci-pipeline/scripts/git-hooks/pre-commit .git/hooks/pre-commit
+cp skills/android_skill/imac-android-ci-pipeline/scripts/git-hooks/pre-push   .git/hooks/pre-push
 chmod +x .git/hooks/pre-commit .git/hooks/pre-push
 ```
 
