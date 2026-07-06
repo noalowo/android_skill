@@ -1,5 +1,5 @@
 ---
-name: android-ci-pipeline
+name: imac-android-ci-pipeline
 description: Use when setting up, modifying, or troubleshooting a CI pipeline for a Java Android project (single app module) on GitLab (gitlab.com or self-hosted, Free tier). Triggers on Chinese or English "設定 GitLab CI / 建立 pipeline / 加入 lint / 單元測試階段 / 程式碼品質檢查 / Checkstyle / SpotBugs / find-sec-bugs / SAST / 靜態安全檢測 / build APK / debug APK / pre-commit hook / MR pipeline", "setup CI", "add GitLab CI", "configure pipeline", "code quality check", "add SAST", "build debug APK", "pre-commit hook". 涵蓋 lint / 程式碼品質 / SAST / 單元測試 / build debug APK。不含 CD（部署 / 發佈 / release 簽名）。
 version: 4.0.0
 ---
