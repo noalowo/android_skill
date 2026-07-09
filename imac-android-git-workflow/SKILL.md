@@ -1,5 +1,5 @@
 ---
-name: android_git_workflow
+name: imac-android-git-workflow
 description: Android Team Git collaboration workflow using main/develop/feature branch model with GitLab Merge Requests. Triggers on Chinese or English: "開新分支 / 建立 feature 分支 / create branch / new branch", "開 MR / 建立 merge request / submit PR", "rebase develop / 同步 develop / 更新分支 / sync with develop", "commit message 格式 / 分支命名 / branch naming", "合併到 develop / 合併到 main / merge to develop", "解衝突 / resolve conflict during rebase", "git pull / git fetch / git stash on Android project". MUST also trigger whenever the user is about to commit code in an Android project (to enforce commit message format). Do NOT trigger for general non-Android git questions.
 ---
 

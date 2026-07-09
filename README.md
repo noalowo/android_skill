@@ -5,6 +5,9 @@
 ```
 android_skill/
 ├── README.md
+├── .claude-plugin/                        # Claude Code plugin / marketplace 設定
+│   ├── marketplace.json                   # marketplace 目錄檔（imac-skills）
+│   └── plugin.json                        # plugin 定義（imac-android）
 ├── imac-android-architecture-skill/       # MVP 架構開發規範
 │   ├── SKILL.md                           # 完整開發規範（主要參考文件）
 │   ├── assets/
@@ -51,7 +54,7 @@ android_skill/
 │           ├── pre-commit                 # commit 前跑 checkstyle + spotbugs
 │           ├── pre-push                   # push 前跑 lint + unit test
 │           └── README.md                  # git hook 安裝說明
-└── git_skill/                             # Android Team Git 協作規範
+└── imac-android-git-workflow/             # Android Team Git 協作規範
     ├── SKILL.md                           # 分支模型、命名規則、紅線規則、指令模板
     ├── examples/
     │   └── commit_messages.md             # Commit message 格式範例
@@ -76,14 +79,29 @@ android_skill/
 - **imac-android-ci-pipeline/assets/** - `.gitlab-ci.yml`、Checkstyle / SpotBugs 規則檔、`.editorconfig`
 - **imac-android-ci-pipeline/references/** - 版本查證、Android module 的 Gradle 設定、GitLab 設定、Android Studio 整合、疑難排解、適用限制與版本相容性
 - **imac-android-ci-pipeline/scripts/git-hooks/** - 本地 pre-commit / pre-push hook 與安裝說明
-- **git_skill/SKILL.md** - Android Team 在 GitLab 的協作流程：main/develop/feature 三層分支模型、分支命名與 commit message 強制格式、紅線規則（禁止對 main/develop 直接 push 或 pull）、rebase / MR / release 合併指令模板
-- **git_skill/examples/** - Commit message 格式範例
-- **git_skill/references/** - 分情境的詳細指南（onboarding、MR workflow、rebase、release 合併、非標準狀況處理）
-- **git_skill/scripts/validate.sh** - 自動驗證分支名與 commit message 格式
+- **imac-android-git-workflow/SKILL.md** - Android Team 在 GitLab 的協作流程：main/develop/feature 三層分支模型、分支命名與 commit message 強制格式、紅線規則（禁止對 main/develop 直接 push 或 pull）、rebase / MR / release 合併指令模板
+- **imac-android-git-workflow/examples/** - Commit message 格式範例
+- **imac-android-git-workflow/references/** - 分情境的詳細指南（onboarding、MR workflow、rebase、release 合併、非標準狀況處理）
+- **imac-android-git-workflow/scripts/validate.sh** - 自動驗證分支名與 commit message 格式
 
 ## 如何在 Android Studio 中使用
 
-### Claude Code 使用者
+### Claude Code 使用者（推薦：Plugin Marketplace）
+
+在 Claude Code 內執行兩行指令即可安裝，之後用 `/plugin` 就能更新：
+
+```
+/plugin marketplace add noalowo/android_skill
+/plugin install imac-android@imac-skills
+```
+
+三個 skill 會一起裝進來：`imac-android-architecture-skill`、`imac-android-ci-pipeline`、`imac-android-git-workflow`。
+
+驗證：`/plugin` 看到 `imac-android@imac-skills` 為 enabled，或 `/skills` 列出上述三個 skill。
+更新：`/plugin marketplace update imac-skills`。
+
+
+### Claude Code 使用者（手動複製）
 
 將此專案複製至 Claude Code 的 skills 目錄，三種方式：
 1. download zip 然後解壓縮，放入 C:/User/username/.claude/skills/ 目錄底下
@@ -94,7 +112,7 @@ android_skill/
     skills/
     ├── imac-android-architecture-skill
     ├── imac-android-ci-pipeline
-    └── git_skill
+    └── imac-android-git-workflow
     ```
 3. 找個資料夾 git clone 此專案，並把各 skill 目錄複製至自己的 C:/User/username/.claude/skills/ 目錄底下
 
@@ -114,7 +132,7 @@ android_skill/
     skills/
     ├── imac-android-architecture-skill
     ├── imac-android-ci-pipeline
-    └── git_skill
+    └── imac-android-git-workflow
     ```
 3. 找個資料夾 git clone 此專案，並把各 skill 目錄複製至自己的 C:/User/username/.gemini/skills/ 目錄底下
 
@@ -152,7 +170,7 @@ https://docs.github.com/en/copilot/concepts/agents/about-agent-skills
 - 在 Android module 接上 Checkstyle / SpotBugs / JaCoCo 的 Gradle 設定
 - 設定 pre-commit hook 與 Android Studio 規則檔同步
 
-**Git 協作流程（git_skill）**
+**Git 協作流程（imac-android-git-workflow）**
 - 開新 feature 分支 / 建立 MR
 - 撰寫或檢查 commit message 格式
 - rebase develop / 同步 develop / 解衝突
