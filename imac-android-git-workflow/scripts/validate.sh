@@ -8,7 +8,7 @@
 #   ./validate.sh                             # Auto: validate current branch + last commit message
 #
 # Install as commit-msg hook:
-#   ln -s ../../skills/android_skill/git_skill/scripts/validate.sh .git/hooks/commit-msg
+#   ln -s ../../skills/android_skill/imac-android-git-workflow/scripts/validate.sh .git/hooks/commit-msg
 #   chmod +x .git/hooks/commit-msg
 # When invoked by git as a commit-msg hook, $1 is the commit message file path.
 

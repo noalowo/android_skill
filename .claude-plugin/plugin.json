@@ -1,0 +1,16 @@
+{
+  "name": "imac-android",
+  "version": "1.0.0",
+  "description": "Android 開發規範：MVP 架構、GitLab CI pipeline、Git 協作流程",
+  "author": {
+    "name": "noah",
+    "email": "noah17701675@gmail.com"
+  },
+  "repository": "https://github.com/noalowo/android_skill",
+  "keywords": ["android", "java", "mvp", "gitlab-ci", "git-workflow"],
+  "skills": [
+    "./imac-android-git-workflow",
+    "./imac-android-architecture-skill",
+    "./imac-android-ci-pipeline"
+  ]
+}

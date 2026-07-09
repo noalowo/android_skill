@@ -37,13 +37,13 @@ git reset --hard origin/develop
 
 ```bash
 # 從專案根目錄
-ln -s ../../skills/android_skill/git_skill/scripts/validate.sh .git/hooks/commit-msg
+ln -s ../../skills/android_skill/imac-android-git-workflow/scripts/validate.sh .git/hooks/commit-msg
 chmod +x .git/hooks/commit-msg
 ```
 
 Windows (Git Bash):
 ```bash
-cp skills/android_skill/git_skill/scripts/validate.sh .git/hooks/commit-msg
+cp skills/android_skill/imac-android-git-workflow/scripts/validate.sh .git/hooks/commit-msg
 chmod +x .git/hooks/commit-msg
 ```
 
