@@ -4,15 +4,13 @@
 
 ## 安裝
 
-從專案根目錄：
+由 Claude 執行安裝，以 `${CLAUDE_PLUGIN_ROOT}/skills/imac-android-ci-pipeline/scripts/git-hooks/` 作為來源，把 hook 複製到專案的 `.git/hooks/` 並加上執行權限：
 
 ```sh
-cp skills/android_skill/imac-android-ci-pipeline/scripts/git-hooks/pre-commit .git/hooks/pre-commit
-cp skills/android_skill/imac-android-ci-pipeline/scripts/git-hooks/pre-push   .git/hooks/pre-push
+cp "${CLAUDE_PLUGIN_ROOT}/skills/imac-android-ci-pipeline/scripts/git-hooks/pre-commit" .git/hooks/pre-commit
+cp "${CLAUDE_PLUGIN_ROOT}/skills/imac-android-ci-pipeline/scripts/git-hooks/pre-push"   .git/hooks/pre-push
 chmod +x .git/hooks/pre-commit .git/hooks/pre-push
 ```
-
-（實際來源路徑依本 skill 在專案中的位置調整。）
 
 ## 行為
 
