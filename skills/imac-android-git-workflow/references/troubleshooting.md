@@ -132,7 +132,7 @@ merge 會產生額外的 merge commit，多人協作時 graph 會變得很亂。
 
 ### protected 分支怎麼同步
 
-日常用 `git pull --ff-only`。它在本地分歧時會直接失敗，這代表 protected 分支上有不該存在的本地 commit；查清楚是什麼、確認要丟棄後，才用 `git fetch origin && git reset --hard origin/<branch>`。
+日常用 `git pull --ff-only`。失敗有兩種原因：工作目錄有未提交的改動（先 `git stash` 或把改動移到 feature 分支），或本地分支已與遠端分歧（protected 分支上有不該存在的本地 commit）。只有後者才查清楚、確認要丟棄後用 `git fetch origin && git reset --hard origin/<branch>`。
 
 不要用不帶參數的 `git pull`：本地若有雜 commit，會產生 merge commit，並被之後開出的 feature 分支繼承進 MR/PR。
 

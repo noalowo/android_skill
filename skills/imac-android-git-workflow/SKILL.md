@@ -149,7 +149,10 @@ git config --global pull.ff only
 
 **注意**：`pull.ff only` 不能跟 `pull.rebase true` 同時設定。Git 2.34 起兩者衝突時 `pull.ff only` 優先，會讓原本該用 rebase 的 pull 直接失敗。如果之前設過 `pull.rebase true`，先清掉：`git config --global --unset pull.rebase`。
 
-如果 `--ff-only` 失敗，代表本地 protected 分支上有不該存在的 commit（`develop`、`main` 上本來就不該有本地提交）。先查清楚是什麼，確認要丟棄後才升級到 `reset --hard`：
+`--ff-only` 失敗有兩種原因，先分辨是哪一種：
+
+- **工作目錄有未提交的改動**：先 `git stash`，或把改動移到 feature 分支再提交。不要用 `reset --hard` 處理這種情況。
+- **本地分支已與遠端分歧**：代表 `develop`、`main` 上有不該存在的本地提交。查清楚是什麼、確認要丟棄後，才升級到 `reset --hard`：
 
 ```bash
 git log origin/<branch>..<branch>   # 看本地多出什麼
