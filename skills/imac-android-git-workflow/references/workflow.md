@@ -8,12 +8,11 @@
 
 ```bash
 git checkout develop
-git fetch origin
-git reset --hard origin/develop
+git pull --ff-only
 git checkout -b feature/<developer>_<area>
 ```
 
-不要用 `git pull` 對齊 develop，理由見 `SKILL.md` §4「同步 protected 分支」。
+對齊 develop 用 `git pull --ff-only`，失敗時的處理見 `SKILL.md` §4「同步 protected 分支」。
 
 分支命名格式參見 `SKILL.md` §3.1。
 
@@ -65,8 +64,7 @@ MR/PR 合併（由有權限者操作）後：
 
 ```bash
 git checkout develop
-git fetch origin
-git reset --hard origin/develop
+git pull --ff-only
 git branch -d feature/<developer>_<area>
 git remote prune origin
 ```
@@ -86,11 +84,10 @@ git remote prune origin
 ### 6.2 對齊本地分支
 
 ```bash
-git fetch origin
 git checkout develop
-git reset --hard origin/develop
+git pull --ff-only
 git checkout main
-git reset --hard origin/main
+git pull --ff-only
 ```
 
 ### 6.3 確認 release 範圍
@@ -113,9 +110,8 @@ git log --oneline origin/main..origin/develop
 由有權限者合併，產生一個 merge commit。合併後：
 
 ```bash
-git fetch origin
 git checkout main
-git reset --hard origin/main
+git pull --ff-only
 git tag -a v<X.Y.Z> -m "Release v<X.Y.Z>"
 git push origin v<X.Y.Z>
 ```
