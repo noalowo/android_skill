@@ -130,10 +130,20 @@ git push -f origin feature/<your-branch>
 
 merge 會產生額外的 merge commit，多人協作時 graph 會變得很亂。rebase 把 commit 重新 apply 到最新 develop 上，歷史是一條乾淨的線。
 
-### 為什麼 protected 分支不用 git pull
+### protected 分支怎麼同步
 
-本地 `develop`（或 `main`）若累積雜 commit，`git pull` 會產生 merge commit，並被之後開出的 feature 分支繼承進 MR/PR；一律改用 `git fetch origin && git reset --hard origin/<branch>` 直接對齊遠端。
+日常用 `git pull --ff-only`。它在本地分歧時會直接失敗，這代表 protected 分支上有不該存在的本地 commit；查清楚是什麼、確認要丟棄後，才用 `git fetch origin && git reset --hard origin/<branch>`。
+
+不要用不帶參數的 `git pull`：本地若有雜 commit，會產生 merge commit，並被之後開出的 feature 分支繼承進 MR/PR。
 
 ### rebase 後要重新跑測試嗎
 
 要。rebase 等於在新的 base 上重新 apply commit，行為可能改變，push 前至少跑一次本地驗證。
+
+### feature 分支可以用 git pull --rebase 嗎
+
+可以。`git pull --rebase origin develop` 等價於 `git fetch origin && git rebase origin/develop`。跟協作者同步同一條 feature 分支時，不帶 refspec 的 `git pull --rebase` 會 rebase 到 `origin/<同名分支>`，也可以用。
+
+但 protected 分支上不要用 `pull --rebase`：本地如果有雜 commit，會被 rebase 到最新之上安靜存活，比產生 merge commit 更難察覺。
+
+如果已經設定 `pull.ff only`，單次使用 `git pull --rebase` 會明示覆蓋該設定，仍然有效。

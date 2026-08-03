@@ -128,30 +128,51 @@ fix: 修正登入崩潰 - noah            # 類型應為 [fix] 而非 fix:
 
 ```bash
 git checkout develop
-git fetch origin
-git reset --hard origin/develop
+git pull --ff-only
 git checkout -b feature/<developer>_<area>
 ```
 
 ### 同步 protected 分支（develop / main）
 
-一律用 `git fetch origin && git reset --hard origin/<branch>`，不要用 `git pull`：本地 `develop` 若累積雜 commit，`git pull` 會產生 merge commit，並被之後開出的 feature 分支繼承進 MR/PR；`reset --hard` 直接對齊遠端，避免這個問題。
-
-執行 `reset --hard` 前先 `git status` 確認沒有未 commit 的改動——未 commit 的東西一旦被 reset 掉就救不回來。
+日常同步一律用 `git pull --ff-only`：本地乾淨時，結果跟 `git fetch origin && git reset --hard origin/<branch>` 完全相同；本地一旦分歧，它會直接失敗，而不是安靜地產生 merge commit；而且它不會動到尚未 commit 的改動。
 
 ```bash
-git fetch origin
-git status                       # 先確認沒有未 commit 的改動
 git checkout <branch>
+git pull --ff-only
+```
+
+建議直接設為全域預設值：
+
+```bash
+git config --global pull.ff only
+```
+
+**注意**：`pull.ff only` 不能跟 `pull.rebase true` 同時設定。Git 2.34 起兩者衝突時 `pull.ff only` 優先，會讓原本該用 rebase 的 pull 直接失敗。如果之前設過 `pull.rebase true`，先清掉：`git config --global --unset pull.rebase`。
+
+如果 `--ff-only` 失敗，代表本地 protected 分支上有不該存在的 commit（`develop`、`main` 上本來就不該有本地提交）。先查清楚是什麼，確認要丟棄後才升級到 `reset --hard`：
+
+```bash
+git log origin/<branch>..<branch>   # 看本地多出什麼
+git status                          # 確認沒有未 commit 的改動
+git fetch origin
 git reset --hard origin/<branch>
 ```
+
+`reset --hard` 會丟掉未 commit 的改動且無法還原，只有在上述確認之後才使用。
+
+### 同步 feature 分支到最新 develop
+
+```bash
+git pull --rebase origin develop
+```
+
+等價於 `git fetch origin && git rebase origin/develop`。兩步版的好處是可以在 fetch 之後、rebase 之前先看一眼要拉進來的內容：`git log origin/develop --oneline -10`。
 
 ### 合併後本地清理
 
 ```bash
 git checkout develop
-git fetch origin
-git reset --hard origin/develop
+git pull --ff-only
 git branch -d feature/<developer>_<area>
 git remote prune origin
 ```
