@@ -4,18 +4,12 @@
 # Usage:
 #   ./validate.sh branch [branch-name]        # Validate branch name (default: current branch)
 #   ./validate.sh commit "<commit-message>"   # Validate a commit message string
-#   ./validate.sh commit-file <file-path>     # Validate commit message from file (for git commit-msg hook)
 #   ./validate.sh                             # Auto: validate current branch + last commit message
-#
-# Install as commit-msg hook:
-#   ln -s ../../skills/android_skill/imac-android-git-workflow/scripts/validate.sh .git/hooks/commit-msg
-#   chmod +x .git/hooks/commit-msg
-# When invoked by git as a commit-msg hook, $1 is the commit message file path.
 
 set -e
 
-BRANCH_REGEX='^feature/[a-z][a-z0-9]*_[a-zA-Z0-9._-]+$'
-COMMIT_REGEX='^\[(feat|fix|refactor|docs|chore|test|style|perf|build|ci)\] .+ - [a-z][a-z0-9]*$'
+BRANCH_REGEX='^feature/[a-z][a-z0-9._-]*_[a-zA-Z0-9._-]+$'
+COMMIT_REGEX='^\[(feat|fix|refactor|docs|chore|test|style|perf|build|ci)\] .+ - [a-z][a-z0-9._-]*$'
 PROTECTED_BRANCHES=("main" "develop")
 
 RED='\033[0;31m'
@@ -48,7 +42,7 @@ validate_branch() {
     else
         err "Branch name '$branch' does not match required pattern:"
         err "  feature/<developer>_<area-or-feature>"
-        err "Examples: feature/noah_login_api, feature/alice_recyclerview-adapter"
+        err "Examples: feature/noah_login-api, feature/mary-jane_login-api"
         return 1
     fi
 }
@@ -93,13 +87,6 @@ case "$mode" in
         fi
         validate_commit_msg "$2"
         ;;
-    commit-file)
-        if [ -z "$2" ] || [ ! -f "$2" ]; then
-            err "Usage: $0 commit-file <path>"
-            exit 2
-        fi
-        validate_commit_msg "$(cat "$2")"
-        ;;
     auto)
         validate_branch || exit 1
         last_msg=$(git log -1 --pretty=%B 2>/dev/null || echo "")
@@ -108,13 +95,8 @@ case "$mode" in
         fi
         ;;
     *)
-        # If invoked as git commit-msg hook, $1 is a file path
-        if [ -f "$mode" ]; then
-            validate_commit_msg "$(cat "$mode")"
-        else
-            err "Unknown mode: $mode"
-            err "Usage: $0 [branch|commit|commit-file|auto] [arg]"
-            exit 2
-        fi
+        err "Unknown mode: $mode"
+        err "Usage: $0 [branch|commit|auto] [arg]"
+        exit 2
         ;;
 esac

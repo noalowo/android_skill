@@ -1,22 +1,10 @@
 # Commit Message 範例集
 
-格式：`[<type>] <簡述> - <developer>`
-
-可擴充 type 列表：
-- `feat` — 新功能
-- `fix` — bug 修正
-- `refactor` — 重構（不改變外部行為）
-- `docs` — 文件
-- `chore` — 雜務（依賴升級、設定）
-- `test` — 測試
-- `style` — 格式（不影響邏輯，例如縮排、空白）
-- `perf` — 效能
-- `build` — 建置系統
-- `ci` — CI 設定
+格式：`[<type>] <簡述> - <developer>`。第一行必填；`Add:` / `Fix:` / `Refactor:` 條列 body 為選配，有其他變更才加。`<developer>` 強制小寫。規則詳見 `SKILL.md` §3.2。
 
 ---
 
-## 標準範例 / Standard Examples
+## 標準範例
 
 ### feat
 ```
@@ -85,7 +73,7 @@ Fix:
 
 ---
 
-## 不合法範例 / Invalid Examples
+## 不合法範例
 
 | 訊息 | 問題 |
 |---|---|
@@ -95,13 +83,4 @@ Fix:
 | `[Feat] 新增登入 - noah` | type 必須小寫 |
 | `[feat]新增登入 - noah` | `]` 後缺空格 |
 | `[feat] 新增登入- noah` | `-` 前後要空格 |
-| `[feat] add login - Noah` | developer 建議用小寫 |
-
----
-
-## 寫好 commit message 的小建議 / Tips
-
-- **第一行 ≤ 50 字元**（不含 type tag 與 developer 後綴），讓 GitLab 列表好看
-- **動詞開頭**（新增 / 修正 / 移除 / 簡化），不要寫「關於登入功能的修改」這種模糊敘述
-- **一個 commit 一件事**，不要一個 commit 改 5 個無關功能
-- 詳細變更**寫在 body**（第三行起），不要硬塞進標題
+| `[feat] add login - Noah` | developer 必須小寫，`Noah` 不合法 |
