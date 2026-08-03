@@ -23,7 +23,7 @@
 - **禁止**對 `main`、`develop` 直接 push / force push；**禁止** feature 分支互相 merge，一律開 feature 分支。
 - 支援 GitLab 與 GitHub（MR/PR 皆可）。分支命名：`feature/<dev>_<area>`（例：`feature/noah_login`），分支固定用 `develop`（不是 `dev`）。
 - commit message 格式：`[type] 主旨 - <name>`，type ∈ `feat / fix / refactor / docs / chore / test / style / perf / build / ci`（例：`[feat] 新增登入頁 - noah`）。
-- 同步 `develop` / `main` 用 `git fetch origin && git reset --hard origin/<branch>`，不用 `git pull`。
+- 同步 `develop` / `main` 用 `git pull --ff-only`；失敗代表本地有不該存在的 commit，查明並確認丟棄後才用 `git fetch origin && git reset --hard origin/<branch>`。feature 分支跟上 develop 用 `git pull --rebase origin develop`。
 - 合流一律走 MR/PR；develop → main 產生 merge commit 後在 main 打 tag。詳細情境見 `skills/imac-android-git-workflow/references/workflow.md`、`references/troubleshooting.md`。
 
 ## 4. CI（imac-android-ci-pipeline）

@@ -15,7 +15,7 @@
       "name": "imac-android",
       "source": "./",
       "description": "Android 團隊開發規範：MVP 架構、GitLab CI pipeline、Git 協作流程",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "author": {
         "name": "noah",
         "email": "noah17701675@gmail.com"

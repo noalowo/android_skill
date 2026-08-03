@@ -1,6 +1,6 @@
 {
   "name": "imac-android",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Android 開發規範：MVP 架構、GitLab CI pipeline、Git 協作流程",
   "author": {
     "name": "noah",
