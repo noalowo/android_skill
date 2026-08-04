@@ -24,20 +24,20 @@
 - `jacocoTestReport` 的 `executionData` 指向 `build/jacoco`（unit test 的 `.exec` 位置），不要掃整個 `build/`，否則 Gradle 嚴格驗證會因隱性依賴報錯。
 - AGP 大版本升級後仍建議照 `gradle-setup.md` 的「首次驗證」實跑一次。
 
-## 工具版本與相容性
+## 相容規則
 
-下表是「Gradle 8.10 + JDK 17（CI image）+ Java 8 target」環境下、2026-06 驗證過的 baseline。**每次使用本 skill 時應依 `references/version-check.md` 用 web 重新查證當前相容版本**；本表作為查不到 web 時的 fallback 與相容規則參考：
+版本號不寫在這裡——數字會腐化，規則不會。下表是決定版本時要套用的相依關係；查證流程與推導步驟見 `references/version-check.md`。
 
-| 元件 | 鎖定版本 | 為什麼不是 latest |
+| 元件 | 相依對象 | 規則 |
 |---|---|---|
-| `com.github.spotbugs`（Gradle plugin）| 6.3.0 | 6.4.0+ 升 Kotlin 2.2.20 metadata，Gradle 8.x 內建 Kotlin 讀不了，會在 apply plugin 階段就失敗。6.3.0 是最後支援 Gradle 8 的版本。升級 Gradle 到 9 才能用 6.4.0+。 |
-| SpotBugs（`toolVersion`）| 4.8.6 | find-sec-bugs 1.14.0 針對 SpotBugs 4.8.x 建置，pin 4.8.x 對齊引擎，避免 4.9/4.10 的 API 落差。 |
-| `findsecbugs-plugin` | 1.14.0 | 目前最新，提供 SAST 安全規則。 |
-| Checkstyle（`toolVersion`）| 10.21.1 | 10.x 需 Java 11+，可在 image 的 JDK 17 上跑；13.x 需 Java 21，會跑不動。鎖在 10.x 系列。 |
-| JaCoCo | 0.8.12 | 支援到 Java 22，JDK 17 可跑。 |
-| `mingc/android-build-box` | 1.27.0 | 內含 JDK 17，相容 AGP 8.2。正式環境建議鎖 digest，避免上游覆蓋 tag。 |
+| `com.github.spotbugs`（Gradle plugin）| Gradle 主版本 | 已知分界點：6.4.0 起改用新的 Kotlin metadata，Gradle 8.x 內建 Kotlin 讀不了；Gradle 8.x 取 6.4.0 之前的最新版，Gradle 9.x 可用 6.4.0 以上 |
+| SpotBugs（`toolVersion`）| `findsecbugs-plugin` 針對的 SpotBugs 版本 | 與 find-sec-bugs release notes 記載的「Upgrade SpotBugs to X」對齊主.次版 |
+| `findsecbugs-plugin` | — | 取最新穩定版，無額外相依限制 |
+| Checkstyle（`toolVersion`）| 建置 JDK | 主版本有最低 JDK 需求。已知：10.x 需 Java 11+、13.x 需 Java 21。取建置 JDK 跑得動的最新版 |
+| JaCoCo | 建置 JDK | 取支援建置 JDK class 版本的最新版 |
+| CI image（`ghcr.io/cirruslabs/android-sdk`）| 專案 `compileSdk` | tag = compileSdk 數字；需要 NDK 用 `<compileSdk>-ndk` |
 
-> 升級準則：動 Gradle / AGP / JDK 任一個版本前，先回頭比對這張表，尤其是 SpotBugs plugin 與 Gradle 的綁定關係，以及 Checkstyle 與 JDK 的最低版需求。
+> 升級準則：動 Gradle / AGP / JDK / compileSdk 任一個之前，先回頭比對這張表，尤其是 SpotBugs plugin 與 Gradle 的綁定關係，以及 Checkstyle 與 JDK 的最低版需求。
 
 ## 不涵蓋
 

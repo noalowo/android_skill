@@ -11,9 +11,9 @@
 | pipeline 跑兩次 | branch 與 MR 同時觸發 | `workflow:rules` 對 branch rule 加 `&& $CI_PIPELINE_SOURCE != "merge_request_event"` |
 | Checkstyle / SpotBugs 報太多既有違規擋住 pipeline | 既有專案累積的違規 | 用 Gradle 軟性門檻：Checkstyle `severity=warning`、SpotBugs `ignoreFailures=true`，先報告不擋路 |
 | SpotBugs false positive | 規則太嚴 | 在 `config/spotbugs/exclude.xml` 加 `<Match>` 排除 |
-| apply spotbugs plugin 報 Kotlin metadata 版本錯誤 | spotbugs-gradle-plugin 升到 6.4.0+，與 Gradle 8 不相容 | pin 回 `6.3.0`；要用 6.4.0+ 需先把 Gradle 升到 9 |
-| Checkstyle 在 CI 報 `UnsupportedClassVersionError` | Checkstyle 版本需要的 JDK 高於 image | 鎖 Checkstyle 在 10.x（需 Java 11+），勿用 13.x（需 Java 21）|
-| `build-debug` 報 `No space left on device`（packageDebug）| runner 磁碟不足：肥 image（mingc 十幾 GB）+ gradle cache + 大型原生庫（tensorflow / mediapipe 等）+ APK 塞爆 small runner（25GB）| 見下方「build 磁碟不足」|
+| apply spotbugs plugin 報 Kotlin metadata 版本錯誤 | spotbugs-gradle-plugin 版本與 Gradle 主版本不相容（已知分界點：6.4.0 起的 Kotlin metadata，Gradle 8.x 讀不了）| 依 `references/version-check.md` 的相容規則，依專案的 Gradle 主版本重新推導 plugin 版本上限 |
+| Checkstyle 在 CI 報 `UnsupportedClassVersionError` | Checkstyle 版本需要的 JDK 高於建置 JDK | 依 `references/version-check.md`，用 image 實查得到的建置 JDK 反推 Checkstyle 主版本上限，不要假設固定鎖在某個主版本 |
+| `build-debug` 報 `No space left on device`（packageDebug）| runner 磁碟不足：大型 image + gradle cache + 大型原生庫（tensorflow / mediapipe 等）+ APK 塞爆 small runner（25GB）| 見下方「build 磁碟不足」|
 
 ## 把品質門檻收緊（ratchet）
 
@@ -25,7 +25,7 @@
 
 ## build 磁碟不足（No space left on device）
 
-帶大量原生庫的 app（tensorflow-lite / mediapipe / vosk 等）打包時，APK 與 intermediates 很大，加上肥 image 與 gradle cache，容易塞爆磁碟小的 runner。lint / sast / test 等輕量 job 不受影響，只有 `build-debug`（packageDebug）會爆。處理方式依 runner 類型：
+帶大量原生庫的 app（tensorflow-lite / mediapipe / vosk 等）打包時，APK 與 intermediates 很大，加上 image 本身與 gradle cache 的體積，容易塞爆磁碟小的 runner。image 大小差異很大：精簡的 SDK-only image 約 1GB 級，含完整工具鏈的全家桶型 image 壓縮後約 6GB 級——選精簡 image 本身就是緩解磁碟不足的方法之一。lint / sast / test 等輕量 job 不受影響，只有 `build-debug`（packageDebug）會爆。處理方式依 runner 類型：
 
 - **gitlab.com SaaS**：small runner 只有 25GB。把 `build-debug` 指到磁碟較大的 runner：
   ```yaml
