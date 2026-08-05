@@ -1,7 +1,7 @@
 ---
 name: imac-android-ci-pipeline
 description: Use when setting up, modifying, or troubleshooting a CI pipeline for a Java Android project (single app module) on GitLab (gitlab.com or self-hosted, Free tier). Triggers on Chinese or English "設定 GitLab CI / 建立 pipeline / 加入 lint / 單元測試階段 / 程式碼品質檢查 / Checkstyle / SpotBugs / find-sec-bugs / SAST / 靜態安全檢測 / build APK / debug APK / pre-commit hook / MR pipeline", "setup CI", "add GitLab CI", "configure pipeline", "code quality check", "add SAST", "build debug APK", "pre-commit hook". 涵蓋 lint / 程式碼品質 / SAST / 單元測試 / build debug APK。不含 CD（部署 / 發佈 / release 簽名）。
-version: 4.0.0
+version: 5.0.0
 ---
 
 # Android CI Pipeline（GitLab，Java、單一 app module）
@@ -12,12 +12,11 @@ version: 4.0.0
 
 ## 觸發後第一件事
 
-依使用者意圖定位到對應檔案，不需要全讀：
+**不論使用者意圖為何，第一步一律先讀 `references/version-check.md`，推導本專案的 CI image 與各工具版本**——這不是表列選項之一，是後續所有動作的前提，未推導前不得填入任何版本號。推導完成後，依意圖定位到對應檔案：
 
 | 意圖 | 動作 |
 |---|---|
-| 第一次建 CI、要可直接用的 pipeline | 照「快速開始」走，複製 `assets/` 檔案 |
-| 要決定工具版本（每次使用都先做）| 讀 `references/version-check.md`，用 web 查證當前相容版本 |
+| 第一次建 CI、要可直接用的 pipeline | 照「快速開始」走，用推導出的版本填入 `assets/` 範本骨架 |
 | 在 Android module 上接 Checkstyle / SpotBugs / JaCoCo | 讀 `references/gradle-setup.md` |
 | 設定 GitLab 分支保護、MR 守門、Free tier 的 SAST 行為 | 讀 `references/gitlab-setup.md` |
 | 讓 Android Studio 的檢查與 CI 一致 | 讀 `references/android-studio.md` |
@@ -51,14 +50,16 @@ WhiteSource(Mend) 屬於 SCA（掃第三方依賴），不在本 skill 範圍；
 
 ## 快速開始
 
-1. 複製 `assets/gitlab-ci.yml` 到專案根目錄並命名為 `.gitlab-ci.yml`。
-2. 在專案根建立 `config/` 並放入規則檔：
+`assets/` 內是範本骨架，image 與版本號皆為佔位符，需推導後才能填入，不是複製即可用。
+
+1. 依 `references/version-check.md` 的 Step 0–2，推導本專案的 CI image（含 digest）與各工具版本號。
+2. 複製 `assets/gitlab-ci.yml` 到專案根目錄並命名為 `.gitlab-ci.yml`，把上一步推導出的 image 填入第一行。
+3. 在專案根建立 `config/` 並放入規則檔：
    - `config/checkstyle/checkstyle.xml`（複製 `assets/checkstyle.xml`）
    - `config/spotbugs/exclude.xml`（複製 `assets/spotbugs-exclude.xml`）
-3. 複製 `assets/editorconfig` 到專案根並命名為 `.editorconfig`。
-4. 依 `references/version-check.md`，用 web 查證本專案環境下各工具的當前相容版本，再決定要寫進 `build.gradle` 的版本號（不要直接照抄 baseline）。
-5. 依 `references/gradle-setup.md`，把 Checkstyle / SpotBugs + find-sec-bugs / JaCoCo 的設定（套用上一步查到的版本）加進 `app/build.gradle`。
-6. 第一次先在本機驗證每個 task 都跑得起來（這步最關鍵，Android module 的 task 路徑需確認）：
+4. 複製 `assets/editorconfig` 到專案根並命名為 `.editorconfig`。
+5. 依 `references/gradle-setup.md`，把 Checkstyle / SpotBugs + find-sec-bugs / JaCoCo 的設定（套用步驟 1 推導出的版本）加進 `app/build.gradle`。
+6. 依 `references/version-check.md` Step 4，在本機跑一次驗證，確認每個 task 都跑得起來（這步最關鍵，Android module 的 task 路徑需確認）：
    ```
    ./gradlew checkstyle spotbugs lintDebug testDebugUnitTest jacocoTestReport assembleDebug
    ```
@@ -70,10 +71,11 @@ WhiteSource(Mend) 屬於 SCA（掃第三方依賴），不在本 skill 範圍；
 
 ## 檢查清單
 
-- [ ] 已依 `references/version-check.md` 用 web 查證並決定各工具的相容版本
+- [ ] 已依 `references/version-check.md` 完成 Step 0–2 推導，決定 CI image 與各工具版本
+- [ ] `.gitlab-ci.yml` 的 image 已填入解析後的 digest，無 `<...>` 佔位符殘留
 - [ ] `.gitlab-ci.yml` 已放在專案根
 - [ ] `config/checkstyle/checkstyle.xml`、`config/spotbugs/exclude.xml` 已建立
-- [ ] `app/build.gradle` 已加 checkstyle / spotbugs / jacoco 設定與自訂 task
+- [ ] `app/build.gradle` 已加 checkstyle / spotbugs / jacoco 設定與自訂 task，版本號已填入且無佔位符殘留
 - [ ] 本機 `./gradlew checkstyle spotbugs lintDebug testDebugUnitTest jacocoTestReport assembleDebug` 全綠
 - [ ] `GRADLE_USER_HOME` 指向 `$CI_PROJECT_DIR/.gradle`
 - [ ] find-sec-bugs plugin 已加入 `spotbugsPlugins`

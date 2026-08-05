@@ -4,11 +4,11 @@
 
 核心原因：`checkstyleMain`、`spotbugsMain`、`jacocoTestReport` 這些是 **Java plugin 的 source set 任務**。Android module 用 AGP，不會自動產生它們，直接 `./gradlew checkstyleMain` 會得到 `Task not found`。下面用自訂 task 指向 Android 的 source / class 路徑，讓它們在 Android module 上可用。
 
-以下範例為 Groovy DSL，對應 AGP 8.2、Gradle 8.10、JDK 17（CI image）、單一 `app` module，加在 `app/build.gradle`。
+以下範例為 Groovy DSL，對應單一 `app` module，加在 `app/build.gradle`。
 
-本段設定已在 AGP 8.2.2 / Gradle 8.10.2 / JDK 17（JBR 21 本機）/ 單一 app module 的真實專案上實機驗證，完整鏈（checkstyle、spotbugs、lintDebug、testDebugUnitTest、jacocoTestReport、assembleDebug）從乾淨狀態 BUILD SUCCESSFUL。
+本文的 **task 寫法與路徑處理**已在真實專案（單一 `app` module）上實機驗證，完整鏈（checkstyle、spotbugs、lintDebug、testDebugUnitTest、jacocoTestReport、assembleDebug）從乾淨狀態 BUILD SUCCESSFUL；此驗證結論與版本號脫鉤，換一組相容的版本組合不影響這些寫法的有效性。
 
-範例中的版本號是 baseline；套用前先依 `references/version-check.md` 用 web 查證本專案環境下的當前相容版本，再填入下面對應位置。版本選擇的相容性理由見 `references/limitations.md`。
+範例中的版本號皆為佔位符（`<...>`）；套用前先依 `references/version-check.md` 推導本專案環境下的當前相容版本，再填入下面對應位置。版本相依規則見 `references/limitations.md`。
 
 ## 1. Plugins
 
@@ -19,7 +19,7 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'checkstyle'
-    id 'com.github.spotbugs' version '6.3.0'
+    id 'com.github.spotbugs' version '<SPOTBUGS_PLUGIN_VERSION>'
     id 'jacoco'
 }
 ```
@@ -28,7 +28,7 @@ plugins {
 
 ```groovy
 checkstyle {
-    toolVersion = '10.21.1'
+    toolVersion = '<CHECKSTYLE_VERSION>'
     configFile = rootProject.file('config/checkstyle/checkstyle.xml')
     ignoreFailures = false
 }
@@ -54,7 +54,7 @@ SpotBugs 分析的是編譯後的 bytecode，所以要指向 javac 的輸出目�
 
 ```groovy
 spotbugs {
-    toolVersion = '4.8.6'
+    toolVersion = '<SPOTBUGS_VERSION>'
     excludeFilter = rootProject.file('config/spotbugs/exclude.xml')
     ignoreFailures = true
 }
@@ -71,7 +71,7 @@ tasks.register('spotbugs', com.github.spotbugs.snom.SpotBugsTask) {
 }
 
 dependencies {
-    spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.14.0'
+    spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:<FINDSECBUGS_VERSION>'
 }
 ```
 
@@ -90,7 +90,7 @@ Android module 不會自動把 `jacocoTestReport` 接到 `testDebugUnitTest`，�
 
 ```groovy
 jacoco {
-    toolVersion = '0.8.12'
+    toolVersion = '<JACOCO_VERSION>'
 }
 
 tasks.register('jacocoTestReport', JacocoReport) {

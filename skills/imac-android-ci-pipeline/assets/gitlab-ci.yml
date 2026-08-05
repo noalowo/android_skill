@@ -1,4 +1,5 @@
-image: mingc/android-build-box:1.27.0
+# image 由專案的 compileSdk 推導 tag、解析 digest 後填入，做法見 references/version-check.md
+image: <CI_IMAGE_DIGEST>
 
 variables:
   GRADLE_USER_HOME: "$CI_PROJECT_DIR/.gradle"
