@@ -7,7 +7,7 @@
 |-------|------|
 | **imac-android-architecture-skill** | MVP 架構、命名規則、Activity 生命週期、ViewBinding、Retrofit、RecyclerView Adapter、Presenter 單元測試 |
 | **imac-android-ci-pipeline** | GitLab CI（Free tier）四階段：lint / SAST / 單元測試 / build debug APK（不含 CD） |
-| **imac-android-git-workflow** | main/develop/feature 分支模型、commit 格式、分支命名、rebase、MR/PR、release 合併流程（GitLab 與 GitHub 皆適用） |
+| **imac-git-workflow** | main/develop/feature 分支模型、commit 格式、分支命名、rebase、MR/PR、release 合併流程（GitLab 與 GitHub 皆適用） |
 
 > 適用對象：Java Android 專案。各 skill 執行前會先讀專案自己的 `CLAUDE.md`（若有）。
 
@@ -27,6 +27,14 @@
 - 驗證：`/plugin` 看到 `imac-android@imac-skills` 為 enabled，或 `/skills` 列出三個 skill。
 - 更新：`/plugin marketplace update imac-skills`。
 
+只要 Git 協作規範的話，改裝 `imac-git-workflow`（只含 git skill，不含 slash 指令）：
+
+```
+/plugin install imac-git-workflow@imac-skills
+```
+
+`imac-android` 已內含同一個 git skill，兩者擇一安裝即可。
+
 ### Claude Code（手動複製）
 
 把本專案 `skills/` 底下的三個目錄複製到你的 skills 目錄（三個 skill 目錄需各自位於 skills 根層，AI 不會遞迴掃描）：
@@ -35,10 +43,10 @@
 C:/Users/<username>/.claude/skills/
 ├── imac-android-architecture-skill
 ├── imac-android-ci-pipeline
-└── imac-android-git-workflow
+└── imac-git-workflow
 ```
 
-方式：下載 zip 解壓、或 git clone 後把 `skills/` 底下三個目錄搬過去。
+方式：下載 zip 解壓、或 git clone 後把 `skills/` 底下三個目錄搬過去。每個 skill 目錄可單獨複製，只要其中一個就只搬那一個。
 驗證：終端輸入 `claude`，再輸入 `/skills`，會列出 project 層級與 user 層級的 skills。
 
 ### Codex CLI
@@ -75,6 +83,14 @@ https://docs.github.com/en/copilot/concepts/agents/about-agent-skills
 
 ![copilot skills doc](https://github.com/noalowo/image/blob/main/%E8%9E%A2%E5%B9%95%E6%93%B7%E5%8F%96%E7%95%AB%E9%9D%A2%202026-04-01%20152042.png)
 
+### 設定開發者名稱（git skill）
+
+分支名與 commit message 裡的開發者名稱，依序取 `git config imac.developer`、`git config user.name` 中第一個純小寫英數（可含 `.` `_` `-`）的值。`user.name` 不是小寫英文名（例如 `Noah Chen`、中文名）時，設定一次即可，不影響 commit 作者顯示名：
+
+```
+git config --global imac.developer <your-name>
+```
+
 ---
 
 ## Slash 指令與自我測試
@@ -97,7 +113,7 @@ https://docs.github.com/en/copilot/concepts/agents/about-agent-skills
 
 - **架構（imac-android-architecture-skill）**：新增 Activity / 頁面 / 模組、建立 MVP、加 Retrofit API、建 RecyclerView Adapter、改 AndroidManifest、處理生命週期（onResume/onPause/onSaveInstanceState）。
 - **CI（imac-android-ci-pipeline）**：設定 GitLab CI、建 `.gitlab-ci.yml`、pipeline（lint/sast/test/build）、Checkstyle、SpotBugs + find-sec-bugs、JUnit + JaCoCo、build debug APK、pre-commit hook。
-- **Git（imac-android-git-workflow）**：開 feature 分支 / 建 MR 或 PR、撰寫或檢查 commit message、rebase / 同步 develop、解衝突、合併到 develop / release 到 main。
+- **Git（imac-git-workflow）**：開 feature 分支 / 建 MR 或 PR、撰寫或檢查 commit message、rebase / 同步 develop、解衝突、合併到 develop / release 到 main。
 
 ---
 
@@ -121,7 +137,7 @@ android_skill/
 └── skills/                                    # 三個 skill，Claude Code / Codex 皆自動掃描
     ├── imac-android-architecture-skill/       # SKILL.md + assets / examples / references / scripts
     ├── imac-android-ci-pipeline/              # SKILL.md + assets / references / scripts(git-hooks)
-    └── imac-android-git-workflow/             # SKILL.md + examples / references / scripts
+    └── imac-git-workflow/                     # SKILL.md + examples / references / scripts
 ```
 
 各 skill 的 `references/` 收快速查閱的對照表與分情境指南，`examples/` 收可直接替換模組名使用的範例，`assets/` 收可複製的範本檔（layout XML、`.gitlab-ci.yml`、checkstyle 規則等）。

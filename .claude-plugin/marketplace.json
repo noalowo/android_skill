@@ -15,12 +15,24 @@
       "name": "imac-android",
       "source": "./",
       "description": "Android 團隊開發規範：MVP 架構、GitLab CI pipeline、Git 協作流程",
-      "version": "1.2.0",
+      "version": "1.3.0",
       "author": {
         "name": "noah",
         "email": "noah17701675@gmail.com"
       },
       "keywords": ["android", "java", "mvp", "gitlab-ci", "git-workflow"],
+      "category": "development"
+    },
+    {
+      "name": "imac-git-workflow",
+      "source": "./skills/imac-git-workflow",
+      "description": "只含 Git 協作流程：main/develop/feature 分支、commit 格式、MR/PR",
+      "version": "1.0.0",
+      "author": {
+        "name": "noah",
+        "email": "noah17701675@gmail.com"
+      },
+      "keywords": ["android", "git-workflow"],
       "category": "development"
     }
   ]
