@@ -23,6 +23,7 @@
 - **禁止**對 `main`、`develop` 直接 push / force push；**禁止** feature 分支互相 merge，一律開 feature 分支。
 - 支援 GitLab 與 GitHub（MR/PR 皆可）。分支命名：`feature/<dev>_<area>`（例：`feature/noah_login`），分支固定用 `develop`（不是 `dev`）。
 - commit message 格式：`[type] 主旨 - <name>`，type ∈ `feat / fix / refactor / docs / chore / test / style / perf / build / ci`（例：`[feat] 新增登入頁 - noah`）。
+- `<dev>` / `<name>` 依序取 `git config imac.developer`、`git config user.name` 中第一個純小寫英數（可含 `.` `_` `-`）的值；都不符合才問使用者，並建議執行 `git config --global imac.developer <name>` 保存。
 - 同步 `develop` / `main` 用 `git pull --ff-only`；失敗代表工作目錄有未提交改動（先 stash）或本地已與遠端分歧，屬後者且確認丟棄後才用 `git fetch origin && git reset --hard origin/<branch>`。feature 分支跟上 develop 用 `git pull --rebase origin develop`。
 - 合流一律走 MR/PR；develop → main 產生 merge commit 後在 main 打 tag。詳細情境見 `skills/imac-git-workflow/references/workflow.md`、`references/troubleshooting.md`。
 

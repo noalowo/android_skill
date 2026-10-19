@@ -83,6 +83,14 @@ https://docs.github.com/en/copilot/concepts/agents/about-agent-skills
 
 ![copilot skills doc](https://github.com/noalowo/image/blob/main/%E8%9E%A2%E5%B9%95%E6%93%B7%E5%8F%96%E7%95%AB%E9%9D%A2%202026-04-01%20152042.png)
 
+### 設定開發者名稱（git skill）
+
+分支名與 commit message 裡的開發者名稱，依序取 `git config imac.developer`、`git config user.name` 中第一個純小寫英數（可含 `.` `_` `-`）的值。`user.name` 不是小寫英文名（例如 `Noah Chen`、中文名）時，設定一次即可，不影響 commit 作者顯示名：
+
+```
+git config --global imac.developer <your-name>
+```
+
 ---
 
 ## Slash 指令與自我測試

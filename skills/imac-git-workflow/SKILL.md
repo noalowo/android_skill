@@ -100,10 +100,11 @@ Fix:
 - `Add:` / `Fix:` / `Refactor:` 條列 body 為選配，有其他變更才加
 - `<developer>` 強制小寫
 
-**取得 developer 名稱的方式**：Claude 不要每次都問使用者，先執行 `git config user.name`：
+**取得 developer 名稱的方式**：Claude 不要每次都問使用者，依序執行下列指令，採用第一個結果是純小寫英數（可含 `.` `_` `-`）的值：
 
-- 若結果是純小寫英數（可含 `.` `_` `-`）→ 直接採用
-- 若不符合（含中文、含空格、有大寫字母等）→ 才詢問使用者一次
+1. `git config imac.developer`：團隊專用的名稱設定，不影響 commit 作者顯示名
+2. `git config user.name`
+3. 兩者都沒有或不符合（含中文、含空格、有大寫字母等）→ 才詢問使用者一次，並建議使用者執行 `git config --global imac.developer <name>` 保存，之後就不用再問
 
 範例：
 ```
