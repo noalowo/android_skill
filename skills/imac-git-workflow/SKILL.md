@@ -1,5 +1,5 @@
 ---
-name: imac-android-git-workflow
+name: imac-git-workflow
 description: "Android team Git workflow: main/develop/feature branches, supports GitLab MR and GitHub PR. Use for branch creation, commits, MR/PR open or update, rebase, conflict resolution, merging to develop or main. MUST also trigger whenever the user is about to commit in an Android project, to enforce commit message format. Triggers on Chinese: 開新分支 / 分支命名 / commit / commit message 格式 / 開 MR / rebase develop / 解衝突 / 合併到 develop / 合併到 main / force push. Do not trigger for unrelated git questions."
 version: 2.0.0
 ---
