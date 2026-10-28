@@ -1,12 +1,12 @@
 ---
 name: imac-git-workflow
-description: "Android team Git workflow: main/develop/feature branches, supports GitLab MR and GitHub PR. Use for branch creation, commits, MR/PR open or update, rebase, conflict resolution, merging to develop or main. MUST also trigger whenever the user is about to commit in an Android project, to enforce commit message format. Triggers on Chinese: 開新分支 / 分支命名 / commit / commit message 格式 / 開 MR / rebase develop / 解衝突 / 合併到 develop / 合併到 main / force push. Do not trigger for unrelated git questions."
-version: 2.0.0
+description: "Android team Git workflow: main/develop plus feature/fix/refactor/docs/chore/test work branches, supports GitLab MR and GitHub PR. Use for branch creation, commits, MR/PR open or update, rebase, conflict resolution, merging to develop or main. MUST also trigger whenever the user is about to commit in an Android project, to enforce commit message format. Triggers on Chinese: 開新分支 / 分支命名 / commit / commit message 格式 / 開 MR / rebase develop / 解衝突 / 合併到 develop / 合併到 main / force push. Do not trigger for unrelated git questions."
+version: 2.1.0
 ---
 
 # Android 團隊 Git 協作規範
 
-本 skill 規範 Android 團隊在 main / develop / feature 三分支模型下的協作流程，同時支援 GitLab 與 GitHub。Claude 讀完本檔後應能自行判斷分支操作、commit 格式、MR/PR 流程是否合規，並在使用者要求違規操作時直接拒絕。
+本 skill 規範 Android 團隊在 main / develop / 開發分支（feature、fix 等）模型下的協作流程，同時支援 GitLab 與 GitHub。Claude 讀完本檔後應能自行判斷分支操作、commit 格式、MR/PR 流程是否合規，並在使用者要求違規操作時直接拒絕。
 
 ---
 
@@ -16,7 +16,7 @@ version: 2.0.0
 
 | 使用者意圖 | 動作 |
 |---|---|
-| 開新 feature 分支、推送、建立 MR/PR、MR/PR 後續變更、合併後清理、develop → main release | 讀 `references/workflow.md` |
+| 開新分支、推送、建立 MR/PR、MR/PR 後續變更、合併後清理、develop → main release | 讀 `references/workflow.md` |
 | rebase、解衝突、force push、非標準狀況（commit 跑錯分支、想放棄改動、多人共用分支…） | 讀 `references/troubleshooting.md` |
 | 要寫 commit message | 讀 `examples/commit_messages.md`，並用 `scripts/validate.sh` 驗證 |
 | 要確認 GitLab / GitHub 專案設定是否正確 | 讀本檔 §5 |
@@ -30,7 +30,7 @@ version: 2.0.0
 如果使用者要求做下列任一項，直接拒絕並說明理由，不提供變通方案：
 
 1. 禁止對 `main` 或 `develop` 直接 `git push` 或 `git push -f`（含 force push）
-2. 禁止 feature 分支互相 merge（例如 `feature/a` merge 到 `feature/b`）
+2. 禁止開發分支互相 merge（例如 `feature/a` merge 到 `fix/b`）
 
 任一條被違反都可能造成歷史污染、責任歸屬不清、或丟失他人 commit。
 
@@ -41,18 +41,18 @@ version: 2.0.0
 ```
 main       release 版本（protected）
 develop    整合區（protected）
-feature/<developer>_<area>   個人開發分支
+<prefix>/<developer>_<area>   個人開發分支（prefix 見 §3.1）
 ```
 
 - `main`：release 版本，protected，只能透過 MR/PR 合併
 - `develop`：整合區，protected，只能透過 MR/PR 合併
-- `feature/*`：個人開發分支，無保護，合併後刪除
+- 開發分支（`feature/*`、`fix/*` 等）：個人開發分支，無保護，合併後刪除
 
-關鍵原則：
+關鍵原則（不論 prefix 都一樣）：
 
-- 所有 feature 分支都從最新的 `develop` 開出
-- feature 分支只 MR/PR 回 `develop`，不串接其他人的 feature（見紅線 2）
-- MR/PR 合併後，來源 feature 分支刪除（平台端自動刪除 + 本地 `git branch -d`）
+- 所有開發分支都從最新的 `develop` 開出
+- 開發分支只 MR/PR 回 `develop`，不串接其他人的分支（見紅線 2）
+- MR/PR 合併後，來源開發分支刪除（平台端自動刪除 + 本地 `git branch -d`）
 - `develop` → `main` 走 MR/PR，產生 merge commit，合併後在 `main` 打 tag（見 §5、`references/workflow.md`）
 
 ---
@@ -62,24 +62,39 @@ feature/<developer>_<area>   個人開發分支
 ### 3.1 分支名
 
 ```
-feature/<developer>_<area-or-feature-in-english>
+<prefix>/<developer>_<area-or-feature-in-english>
 ```
 
+- `<prefix>`：說明這個分支開來做什麼，只能用下表 6 種（小寫）
 - `<developer>`：開發者英文名，純小寫英數（可含 `.` `_` `-`）
 - `<area-or-feature>`：自由命名的英文功能描述
+
+| prefix | 用途 |
+|---|---|
+| `feature` | 新功能 |
+| `fix` | 修 bug |
+| `refactor` | 重構，不改行為 |
+| `docs` | 只改文件 |
+| `chore` | 建置、依賴、設定、CI 等雜務 |
+| `test` | 只新增或修改測試 |
+
+分支用途跨多類時，選主要目的的 prefix；分支裡每筆 commit 仍依 §3.2 各自標 type。
 
 合法：
 ```
 feature/noah_login-api
+fix/noah_tracking
+refactor/alice_ble-queue
 feature/mary-jane_login-api
-feature/alice_recyclerview-adapter
 ```
 
 不合法：
 ```
 feature/noah                # 缺功能描述
 feature/登入                # 不可用中文
-noah_login                  # 缺 feature/ 前綴
+noah_login                  # 缺 prefix
+hotfix/noah_crash           # prefix 不在清單內
+Fix/noah_crash              # prefix 必須小寫
 ```
 
 ### 3.2 Commit message
@@ -125,12 +140,12 @@ fix: 修正登入崩潰 - noah            # 類型應為 [fix] 而非 fix:
 
 ## 4. 標準指令模板
 
-### 開新 feature 分支
+### 開新分支
 
 ```bash
 git checkout develop
 git pull --ff-only
-git checkout -b feature/<developer>_<area>
+git checkout -b <prefix>/<developer>_<area>
 ```
 
 ### 同步 protected 分支（develop / main）
@@ -152,7 +167,7 @@ git config --global pull.ff only
 
 `--ff-only` 失敗有兩種原因，先分辨是哪一種：
 
-- **工作目錄有未提交的改動**：先 `git stash`，或把改動移到 feature 分支再提交。不要用 `reset --hard` 處理這種情況。
+- **工作目錄有未提交的改動**：先 `git stash`，或把改動移到開發分支再提交。不要用 `reset --hard` 處理這種情況。
 - **本地分支已與遠端分歧**：代表 `develop`、`main` 上有不該存在的本地提交。查清楚是什麼、確認要丟棄後，才升級到 `reset --hard`：
 
 ```bash
@@ -164,7 +179,7 @@ git reset --hard origin/<branch>
 
 `reset --hard` 會丟掉未 commit 的改動且無法還原，只有在上述確認之後才使用。
 
-### 同步 feature 分支到最新 develop
+### 同步開發分支到最新 develop
 
 ```bash
 git pull --rebase origin develop
@@ -177,7 +192,7 @@ git pull --rebase origin develop
 ```bash
 git checkout develop
 git pull --ff-only
-git branch -d feature/<developer>_<area>
+git branch -d <prefix>/<developer>_<area>
 git remote prune origin
 ```
 
@@ -200,7 +215,7 @@ git remote prune origin
 
 當使用者執行 `git commit`、要求產生 commit message、或貼 commit 草稿給你看時：
 
-1. 檢查當前分支（`git branch --show-current`）：若在 `main` 或 `develop`，依紅線規則拒絕，並引導 `git checkout -b feature/<developer>_<area>`
+1. 檢查當前分支（`git branch --show-current`）：若在 `main` 或 `develop`，依紅線規則拒絕，並引導 `git checkout -b <prefix>/<developer>_<area>`
 2. 檢查分支名是否符合 §3.1
 3. 依 §3.2 取得或確認 `<developer>` 名稱
 4. 檢查 commit message 是否符合 §3.2，必要時用 `scripts/validate.sh commit "<message>"` 驗證

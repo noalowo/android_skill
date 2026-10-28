@@ -4,12 +4,12 @@
 
 ---
 
-## 1. 把 feature 分支 rebase 到最新 develop
+## 1. 把開發分支 rebase 到最新 develop
 
 當 MR/PR 顯示需要更新分支，或 reviewer 要求先跟上最新 develop：
 
 ```bash
-git checkout feature/<your-branch>
+git checkout <your-branch>
 git fetch origin
 git rebase origin/develop
 ```
@@ -46,10 +46,10 @@ git rebase --abort
 rebase 會重寫 commit 歷史，推送時必須 `-f`：
 
 ```bash
-git push -f origin feature/<your-branch>
+git push -f origin <your-branch>
 ```
 
-只允許 force push 到自己的 feature 分支。永遠不可對 `main` 或 `develop` force push（紅線 1）。
+只允許 force push 到自己的開發分支。永遠不可對 `main` 或 `develop` force push（紅線 1）。
 
 ---
 
@@ -59,7 +59,7 @@ MR/PR 顯示需要更新時，平台通常提供一個按鈕可直接在遠端�
 
 ---
 
-## 5. 不小心 commit 到 develop，想搬到 feature 分支
+## 5. 不小心 commit 到 develop，想搬到開發分支
 
 前提：尚未 push 到遠端。如果已經 push 到 develop，因為 develop 是 protected branch，正常情況也 push 不上去；若真的發生，需聯絡有權限者處理。
 
@@ -67,8 +67,8 @@ MR/PR 顯示需要更新時，平台通常提供一個按鈕可直接在遠端�
 # 1. 確認要搬的 commit hash
 git log --oneline
 
-# 2. 切到（或建立）feature 分支，cherry-pick
-git checkout feature/<your-branch>        # 或 git checkout -b feature/<developer>_<area>
+# 2. 切到（或建立）開發分支，cherry-pick
+git checkout <your-branch>        # 或 git checkout -b <prefix>/<developer>_<area>
 git cherry-pick <commit-hash>
 
 # 3. 清掉 develop 上的錯誤 commit
@@ -101,7 +101,7 @@ git checkout other-branch
 # ...
 
 # 回來原本分支恢復改動
-git checkout feature/<your-branch>
+git checkout <your-branch>
 git stash pop
 ```
 
@@ -109,15 +109,15 @@ git stash pop
 
 ---
 
-## 8. 多人共用同一 feature 分支
+## 8. 多人共用同一開發分支
 
-一般不建議多人改同一 feature 分支。若不得已：
+一般不建議多人改同一開發分支。若不得已：
 
 ```bash
 git fetch origin
-git rebase origin/feature/<your-branch>    # 把對方的更動 rebase 進來
+git rebase origin/<your-branch>    # 把對方的更動 rebase 進來
 # 解衝突...
-git push -f origin feature/<your-branch>
+git push -f origin <your-branch>
 ```
 
 如果本地已有新 commit 而對方剛 push 新 commit，force push 會覆蓋對方的內容。務必先 fetch + rebase 再 push。
@@ -132,17 +132,17 @@ merge 會產生額外的 merge commit，多人協作時 graph 會變得很亂。
 
 ### protected 分支怎麼同步
 
-日常用 `git pull --ff-only`。失敗有兩種原因：工作目錄有未提交的改動（先 `git stash` 或把改動移到 feature 分支），或本地分支已與遠端分歧（protected 分支上有不該存在的本地 commit）。只有後者才查清楚、確認要丟棄後用 `git fetch origin && git reset --hard origin/<branch>`。
+日常用 `git pull --ff-only`。失敗有兩種原因：工作目錄有未提交的改動（先 `git stash` 或把改動移到開發分支），或本地分支已與遠端分歧（protected 分支上有不該存在的本地 commit）。只有後者才查清楚、確認要丟棄後用 `git fetch origin && git reset --hard origin/<branch>`。
 
-不要用不帶參數的 `git pull`：本地若有雜 commit，會產生 merge commit，並被之後開出的 feature 分支繼承進 MR/PR。
+不要用不帶參數的 `git pull`：本地若有雜 commit，會產生 merge commit，並被之後開出的開發分支繼承進 MR/PR。
 
 ### rebase 後要重新跑測試嗎
 
 要。rebase 等於在新的 base 上重新 apply commit，行為可能改變，push 前至少跑一次本地驗證。
 
-### feature 分支可以用 git pull --rebase 嗎
+### 開發分支可以用 git pull --rebase 嗎
 
-可以。`git pull --rebase origin develop` 等價於 `git fetch origin && git rebase origin/develop`。跟協作者同步同一條 feature 分支時，不帶 refspec 的 `git pull --rebase` 會 rebase 到 `origin/<同名分支>`，也可以用。
+可以。`git pull --rebase origin develop` 等價於 `git fetch origin && git rebase origin/develop`。跟協作者同步同一條開發分支時，不帶 refspec 的 `git pull --rebase` 會 rebase 到 `origin/<同名分支>`，也可以用。
 
 但 protected 分支上不要用 `pull --rebase`：本地如果有雜 commit，會被 rebase 到最新之上安靜存活，比產生 merge commit 更難察覺。
 
