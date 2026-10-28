@@ -8,7 +8,7 @@
 
 set -e
 
-BRANCH_REGEX='^feature/[a-z][a-z0-9._-]*_[a-zA-Z0-9._-]+$'
+BRANCH_REGEX='^(feature|fix|refactor|docs|chore|test)/[a-z][a-z0-9._-]*_[a-zA-Z0-9._-]+$'
 COMMIT_REGEX='^\[(feat|fix|refactor|docs|chore|test|style|perf|build|ci)\] .+ - [a-z][a-z0-9._-]*$'
 PROTECTED_BRANCHES=("main" "develop")
 
@@ -31,7 +31,7 @@ validate_branch() {
     for pb in "${PROTECTED_BRANCHES[@]}"; do
         if [ "$branch" = "$pb" ]; then
             err "You are on protected branch '$branch'. Do NOT commit here."
-            err "Run: git checkout -b feature/<dev>_<area>"
+            err "Run: git checkout -b <prefix>/<dev>_<area>"
             return 1
         fi
     done
@@ -41,8 +41,9 @@ validate_branch() {
         return 0
     else
         err "Branch name '$branch' does not match required pattern:"
-        err "  feature/<developer>_<area-or-feature>"
-        err "Examples: feature/noah_login-api, feature/mary-jane_login-api"
+        err "  <prefix>/<developer>_<area-or-feature>"
+        err "  prefix: feature|fix|refactor|docs|chore|test"
+        err "Examples: feature/noah_login-api, fix/noah_tracking"
         return 1
     fi
 }

@@ -7,7 +7,7 @@
 |-------|------|
 | **imac-android-architecture-skill** | MVP 架構、命名規則、Activity 生命週期、ViewBinding、Retrofit、RecyclerView Adapter、Presenter 單元測試 |
 | **imac-android-ci-pipeline** | GitLab CI（Free tier）四階段：lint / SAST / 單元測試 / build debug APK（不含 CD） |
-| **imac-git-workflow** | main/develop/feature 分支模型、commit 格式、分支命名、rebase、MR/PR、release 合併流程（GitLab 與 GitHub 皆適用） |
+| **imac-git-workflow** | main/develop/開發分支（feature、fix 等）模型、commit 格式、分支命名、rebase、MR/PR、release 合併流程（GitLab 與 GitHub 皆適用） |
 
 > 適用對象：Java Android 專案。各 skill 執行前會先讀專案自己的 `CLAUDE.md`（若有）。
 
@@ -113,7 +113,7 @@ git config --global imac.developer <your-name>
 
 - **架構（imac-android-architecture-skill）**：新增 Activity / 頁面 / 模組、建立 MVP、加 Retrofit API、建 RecyclerView Adapter、改 AndroidManifest、處理生命週期（onResume/onPause/onSaveInstanceState）。
 - **CI（imac-android-ci-pipeline）**：設定 GitLab CI、建 `.gitlab-ci.yml`、pipeline（lint/sast/test/build）、Checkstyle、SpotBugs + find-sec-bugs、JUnit + JaCoCo、build debug APK、pre-commit hook。
-- **Git（imac-git-workflow）**：開 feature 分支 / 建 MR 或 PR、撰寫或檢查 commit message、rebase / 同步 develop、解衝突、合併到 develop / release 到 main。
+- **Git（imac-git-workflow）**：開新分支 / 建 MR 或 PR、撰寫或檢查 commit message、rebase / 同步 develop、解衝突、合併到 develop / release 到 main。
 
 ---
 

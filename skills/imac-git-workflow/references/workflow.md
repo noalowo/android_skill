@@ -4,12 +4,12 @@
 
 ---
 
-## 1. 從最新 develop 開 feature 分支
+## 1. 從最新 develop 開新分支
 
 ```bash
 git checkout develop
 git pull --ff-only
-git checkout -b feature/<developer>_<area>
+git checkout -b <prefix>/<developer>_<area>
 ```
 
 對齊 develop 用 `git pull --ff-only`，失敗時的處理見 `SKILL.md` §4「同步 protected 分支」。
@@ -33,14 +33,14 @@ git checkout -b feature/<developer>_<area>
 ### 3.1 首次推送
 
 ```bash
-git push -u origin feature/<developer>_<area>
+git push -u origin <prefix>/<developer>_<area>
 ```
 
 `-u` 設定 upstream，之後可直接 `git push`。
 
 ### 3.2 建立 MR/PR
 
-- **Source**：`feature/<developer>_<area>`
+- **Source**：`<prefix>/<developer>_<area>`
 - **Target**：`develop`
 - 標題沿用 commit message 標題格式：`[<type>] <簡述> - <developer>`
 - 說明欄視情況補充 Add / Fix / Refactor 條列、測試方式、風險點
@@ -52,8 +52,8 @@ git push -u origin feature/<developer>_<area>
 
 MR/PR 建立後，所有後續變更（review 修正、解衝突、加 commit、rebase 對齊最新 develop）：
 
-1. 在 feature 分支上新增 commit，或 rebase 到 `origin/develop`（見 `references/troubleshooting.md`）
-2. rebase 後推送到同一個遠端分支，需要 `git push -f`（只限自己的 feature 分支，見紅線 1）
+1. 在開發分支上新增 commit，或 rebase 到 `origin/develop`（見 `references/troubleshooting.md`）
+2. rebase 後推送到同一個遠端分支，需要 `git push -f`（只限自己的開發分支，見紅線 1）
 3. 推送後平台會自動更新 MR/PR
 
 ---
@@ -65,11 +65,11 @@ MR/PR 合併（由有權限者操作）後：
 ```bash
 git checkout develop
 git pull --ff-only
-git branch -d feature/<developer>_<area>
+git branch -d <prefix>/<developer>_<area>
 git remote prune origin
 ```
 
-清理完成後回到步驟 1，從乾淨的 develop 開下一個 feature 分支。
+清理完成後回到步驟 1，從乾淨的 develop 開下一個開發分支。
 
 ---
 
